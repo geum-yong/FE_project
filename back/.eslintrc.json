@@ -14,6 +14,7 @@
     // "error" or 2 - turn the rule on as an error (exit code is 1 when triggered)
     "no-console": "off",
     "linebreak-style": "off",
+    "consistent-return": "off",
     "prettier/prettier": [
       "error",
       {
