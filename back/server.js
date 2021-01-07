@@ -1,4 +1,3 @@
-require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
@@ -6,8 +5,13 @@ const mongoose = require('mongoose');
 
 const app = express();
 
+const api = require('./api');
+
+require('dotenv').config();
+
 mongoose
   .connect(process.env.MONGO_URI, {
+    dbName: 'FE',
     useNewUrlParser: true,
     useFindAndModify: false,
   })
@@ -34,9 +38,7 @@ app.use(
   })
 );
 
-app.get('/', (req, res) => {
-  res.send('start server');
-});
+app.use('/api', api);
 
 app.listen(app.get('port'), () => {
   console.log(`http://localhost:${app.get('port')}`);
