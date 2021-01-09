@@ -1,0 +1,17 @@
+/* 한나프로체 */
+@font-face {
+  font-family: 'hannaPro';
+  src: url(./BMHANNAPro.woff2) format('woff2'), url(./BMHANNAPro.woff) format('woff');
+}
+
+/* 주아체 */
+@font-face {
+  font-family: 'jua';
+  src: url(./BMJUA_ttf.woff2) format('woff2'), url(./BMJUA.woff) format('woff');
+}
+
+/* 연성체 */
+@font-face {
+  font-family: 'yeonsung';
+  src: url(./BMYEONSUNG_ttf.woff2) format('woff2'), url(./BMYEONSUNG.woff) format('woff');
+}

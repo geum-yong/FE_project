@@ -3,12 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^4.3.0",
     "@testing-library/jest-dom": "^5.11.8",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
+    "antd": "^4.10.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
+    "styled-components": "^5.2.1",
+    "styled-reset": "^4.3.4",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
@@ -39,6 +44,8 @@
     "rules": {
       "no-console": "off",
       "linebreak-style": "off",
+      "import/no-unresolved": "off",
+      "import/extensions": "off",
       "prettier/prettier": [
         "error",
         {
