@@ -15,3 +15,9 @@
   font-family: 'yeonsung';
   src: url(./BMYEONSUNG_ttf.woff2) format('woff2'), url(./BMYEONSUNG.woff) format('woff');
 }
+
+/* 도현체 */
+@font-face {
+  font-family: 'dohyeon';
+  src: url(./BMDOHYEON_ttf.woff2) format('woff2'), url(./BMDoHyeon.woff) format('woff');
+}

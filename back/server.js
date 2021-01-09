@@ -1,6 +1,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const path = require('path');
 const mongoose = require('mongoose');
 
 const app = express();
@@ -37,6 +38,8 @@ app.use(
     },
   })
 );
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', api);
 

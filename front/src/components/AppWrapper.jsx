@@ -2,11 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   padding: 0 15px;
-  background: red;
+  min-height: 100vh;
 
   @media (min-width: 992px) {
+    margin: 0 auto;
     padding: 0;
+    width: 962px;
   }
 `;
 

@@ -1,14 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button } from 'antd';
-import { LoginOutlined, HeartTwoTone } from '@ant-design/icons';
+import { Menu, Dropdown, Button } from 'antd';
+import { HeartTwoTone, LoginOutlined, MenuOutlined } from '@ant-design/icons';
 
-const Wrapper = styled.div`
+const Wrapper = styled.header`
   display: flex;
   align-items: center;
   height: 50px;
-  background: blue;
 
   > h1 {
     font-family: 'hannaPro';
@@ -16,16 +15,11 @@ const Wrapper = styled.div`
   }
 
   > Button {
-    padding: 4px;
-  }
-
-  > Button + Button {
-    margin-left: 10px;
+    display: none;
   }
 
   @media (min-width: 768px) {
     height: 60px;
-    background: brown;
 
     > h1 {
       font-family: 'hannaPro';
@@ -33,19 +27,37 @@ const Wrapper = styled.div`
       flex-grow: 1;
     }
 
-    > Button {
-      padding: 4px 14px;
+    > a {
+      display: none;
     }
-  }
 
-  @media (min-width: 992px) {
-    background: yellow;
-    margin: 0 auto;
-    width: 962px;
+    > Button {
+      display: inline-block;
+    }
+
+    > Button + Button {
+      margin-left: 10px;
+    }
   }
 `;
 
-// 리덕스 먼저 만들자
+const menu = (
+  <Menu>
+    <Menu.Item key='0'>
+      <a href='http://www.alipay.com/'>
+        <HeartTwoTone twoToneColor='#eb2f96' />
+        관심회사
+      </a>
+    </Menu.Item>
+    <Menu.Item key='1'>
+      <a href='http://www.taobao.com/'>
+        <LoginOutlined />
+        로그인
+      </a>
+    </Menu.Item>
+  </Menu>
+);
+
 const Header = () => {
   return (
     <Wrapper>
@@ -56,6 +68,11 @@ const Header = () => {
           취업 소식
         </Link>
       </h1>
+      <Dropdown overlay={menu} trigger={['click']} placement='bottomCenter'>
+        <a href='/' className='ant-dropdown-link' onClick={e => e.preventDefault()}>
+          <MenuOutlined />
+        </a>
+      </Dropdown>
       <Button icon={<HeartTwoTone twoToneColor='#eb2f96' />}>관심회사</Button>
       <Button icon={<LoginOutlined />}>로그인</Button>
     </Wrapper>
