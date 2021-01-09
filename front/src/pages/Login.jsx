@@ -1,10 +1,12 @@
 import React from 'react';
+import AppWrapper from '../components/AppWrapper';
+import LoginBox from '../components/LoginBox';
 
 const Login = () => {
   return (
-    <div>
-      <h1>Login 화면입니다.</h1>
-    </div>
+    <AppWrapper>
+      <LoginBox />
+    </AppWrapper>
   );
 };
 
