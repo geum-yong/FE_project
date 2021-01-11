@@ -1,5 +1,9 @@
 import React from 'react';
+import dotenv from 'dotenv';
 import styled from 'styled-components';
+import { GoogleLogin } from 'react-google-login';
+
+dotenv.config();
 
 const LoginWrapper = styled.section`
   position: absolute;
@@ -52,13 +56,35 @@ const LoginWrapper = styled.section`
   }
 `;
 
-const LoginBox = () => {
+const GoogleLoginCustom = styled(GoogleLogin)`
+  margin: 80px auto 0 !important;
+  padding: 4px 10px !important;
+  font-family: 'jua' !important;
+  font-size: 16px !important;
+  box-shadow: none !important;
+  background: #e24939 !important;
+  color: #fff !important;
+
+  > div {
+    padding-bottom: 6px !important;
+    border-radius: 50% !important;
+  }
+`;
+
+const LoginBox = ({ onLoginSuccess }) => {
   return (
     <LoginWrapper>
       <h1 className='a11y-hidden'>로그인</h1>
       <p>환영합니다.</p>
       <p>안전한 사이트 관리를 위해 로그인이 필요합니다.</p>
       <p>회원님의 어떠한 정보도 유출 혹은 제3자에게 제공되지 않습니다.</p>
+      <GoogleLoginCustom
+        clientId={process.env.REACT_APP_GOOGLE_ID}
+        buttonText='google로 이용하기'
+        onSuccess={onLoginSuccess}
+        onFailure={'1'}
+        cookiePolicy={'single_host_origin'}
+      />
     </LoginWrapper>
   );
 };

@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 import React from 'react';
 import styled from 'styled-components';
 import { Tag } from 'antd';
@@ -13,6 +12,13 @@ const CardWrapper = styled.div`
   border: 1px solid #eee;
   border-radius: 12px;
   box-shadow: 0 0 1px 0 rgba(8, 11, 14, 0.06), 0 16px 16px -1px rgba(8, 11, 14, 0.1);
+  background: #fff;
+  transition: 0.5s;
+
+  :hover {
+    transform: scale(1.05);
+    z-index: 1;
+  }
 
   > .logo {
     margin-top: 30px;
@@ -63,25 +69,33 @@ const CardWrapper = styled.div`
   }
 `;
 
-const JobCard = () => {
+const JobCard = ({ job }) => {
   return (
     <CardWrapper>
       <div className='logo'>
-        <img src={'http://localhost:3050/img/naver.png'} alt='네이버 로고' />
+        {job.imgPath && <img src={`http://localhost:3050/img/${job.imgPath}`} alt={`${job.companyName} 로고`} />}
+        {!job.imgPath && <img src='http://localhost:3050/img/noImage.png' alt='로고 이미지 없음' />}
       </div>
-      <p className='company-name'>NAVER</p>
-      <p className='company-description'>신입</p>
-      <p className='company-description'>2021년 01월 31일까지</p>
+      <p className='company-name'>{job.companyName}</p>
+      <p className='company-description'>
+        {job.exprerienceLevel === 1 && '신입'}
+        {job.exprerienceLevel === 2 && '경력'}
+        {job.exprerienceLevel === 3 && '경력 무관'}
+      </p>
+      <p className='company-description'>{`${job.deadline}까지`}</p>
       <div className='company-tags'>
-        <Tag color='blue'>blue</Tag>
-        <Tag color='blue'>blue</Tag>
-        <Tag color='blue'>blue</Tag>
-        <Tag color='blue'>blue</Tag>
-        <Tag color='blue'>오잉</Tag>
+        {job.skills.map((skill, i) => {
+          if (i > 5) return;
+          return (
+            <Tag color='blue' key={skill + i}>
+              {skill}
+            </Tag>
+          );
+        })}
       </div>
       <div className='like-cnt'>
         <HeartTwoTone twoToneColor='#eb2f96' />
-        <span>12</span>
+        <span>{job.cntLike}</span>
       </div>
     </CardWrapper>
   );

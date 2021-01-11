@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
@@ -8,6 +9,7 @@ const app = express();
 
 const api = require('./api');
 
+app.use(cors());
 require('dotenv').config();
 
 mongoose

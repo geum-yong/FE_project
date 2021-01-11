@@ -2,19 +2,19 @@ const User = require('../../models/user');
 
 // 특정 유저 응답
 exports.find = async (req, res) => {
-  const { email } = req.params;
+  const { id } = req.params;
 
-  if (!email) return res.status(404).send({ message: 'find fail', error: 'null of params' });
+  if (!id) return res.status(404).send();
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ id });
 
-    if (!user) return res.status(404).send({ message: 'find fail', error: 'null of user' });
+    if (!user) return res.send({ message: 'find fail', error: 'null of user' });
 
     res.send({ message: 'find success', user });
   } catch (e) {
     console.error(e);
-    res.status(500).send({ message: 'find fail', error: e });
+    res.status(500).send();
   }
 };
 
@@ -22,22 +22,22 @@ exports.find = async (req, res) => {
 exports.write = async (req, res) => {
   const { id, email } = req.body;
 
-  if (!id || !email) return res.status(404).send({ message: 'write fail', error: 'null of request' });
+  if (!id || !email) return res.status(404).send();
 
   try {
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ id });
 
-    if (user) return res.status(404).send({ message: 'write fail', error: 'overlap of user' });
+    if (user) return res.status(404).send();
 
-    const newUser = await User.create({
+    user = await User.create({
       id,
       email,
     });
 
-    res.send({ message: 'write success', newUser });
+    res.send({ message: 'write success', user });
   } catch (e) {
     console.error(e);
-    res.status(500).send({ message: 'write fail', error: e });
+    res.status(500).send();
   }
 };
 

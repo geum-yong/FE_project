@@ -13,10 +13,10 @@ const Introduce = () => {
 
     > p {
       margin-top: 10px;
-      line-height: 1.5;
+      line-height: 1.3;
       font-family: 'yeonsung';
       font-size: 13px;
-      color: #505256;
+      color: #707379;
     }
 
     @media (min-width: 768px) {

@@ -1,8 +1,12 @@
 import React from 'react';
+import dotenv from 'dotenv';
+import { GoogleLogout } from 'react-google-login';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Menu, Dropdown, Button } from 'antd';
-import { HeartTwoTone, LoginOutlined, MenuOutlined } from '@ant-design/icons';
+import { HeartTwoTone, LoginOutlined, MenuOutlined, LogoutOutlined } from '@ant-design/icons';
+
+dotenv.config();
 
 const Wrapper = styled.header`
   display: flex;
@@ -41,24 +45,40 @@ const Wrapper = styled.header`
   }
 `;
 
-const menu = (
-  <Menu>
-    <Menu.Item key='0'>
-      <a href='http://www.alipay.com/'>
-        <HeartTwoTone twoToneColor='#eb2f96' />
-        관심회사
-      </a>
-    </Menu.Item>
-    <Menu.Item key='1'>
-      <a href='http://www.taobao.com/'>
-        <LoginOutlined />
-        로그인
-      </a>
-    </Menu.Item>
-  </Menu>
-);
+const Header = ({ loginState, onMoveToLogin, onLogoutSucess }) => {
+  const menu = (
+    <Menu>
+      {loginState && (
+        <>
+          <Menu.Item key='0'>
+            <Button icon={<HeartTwoTone twoToneColor='#eb2f96' />} onClick={onMoveToLogin}>
+              관심회사
+            </Button>
+          </Menu.Item>
+          <Menu.Item key='1'>
+            <GoogleLogout
+              clientId={process.env.REACT_APP_GOOGLE_ID}
+              onLogoutSuccess={onLogoutSucess}
+              render={renderProps => (
+                <Button icon={<LogoutOutlined />} onClick={renderProps.onClick} disabled={renderProps.disabled}>
+                  로그아웃
+                </Button>
+              )}
+            />
+          </Menu.Item>
+        </>
+      )}
 
-const Header = () => {
+      {!loginState && (
+        <Menu.Item key='1'>
+          <Button icon={<LoginOutlined />} onClick={onMoveToLogin}>
+            로그인
+          </Button>
+        </Menu.Item>
+      )}
+    </Menu>
+  );
+
   return (
     <Wrapper>
       <h1>
@@ -73,8 +93,22 @@ const Header = () => {
           <MenuOutlined />
         </a>
       </Dropdown>
-      <Button icon={<HeartTwoTone twoToneColor='#eb2f96' />}>관심회사</Button>
-      <Button icon={<LoginOutlined />}>로그인</Button>
+      {loginState && <Button icon={<HeartTwoTone twoToneColor='#eb2f96' />}>관심회사</Button>}
+      {loginState ? (
+        <GoogleLogout
+          clientId={process.env.REACT_APP_GOOGLE_ID}
+          onLogoutSuccess={onLogoutSucess}
+          render={renderProps => (
+            <Button icon={<LogoutOutlined />} onClick={renderProps.onClick} disabled={renderProps.disabled}>
+              로그아웃
+            </Button>
+          )}
+        />
+      ) : (
+        <Button icon={<LoginOutlined />} onClick={onMoveToLogin}>
+          로그인
+        </Button>
+      )}
     </Wrapper>
   );
 };

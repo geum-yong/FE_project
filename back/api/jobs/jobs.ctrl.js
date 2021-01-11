@@ -5,7 +5,7 @@ const Job = require('../../models/job');
 // 공고 리스트 응답
 exports.list = async (req, res) => {
   try {
-    const jobs = await Job.find();
+    const jobs = await Job.find({ deletedDate: null });
 
     res.send({ message: 'list success', jobs });
   } catch (e) {

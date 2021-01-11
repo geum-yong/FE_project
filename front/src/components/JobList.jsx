@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from 'antd';
 import JobCard from './JobCard';
@@ -25,25 +26,22 @@ const MoreBtn = styled(Button)`
   width: 200px;
 `;
 
-const JobList = () => {
+const JobList = ({ jobs }) => {
   return (
     <>
       <JobSection>
         <h2 className='a11y-hidden'>job 리스트</h2>
-        <JobCard />
-        <JobCard />
-        <JobCard />
-        <JobCard />
-        <JobCard />
-        <JobCard />
-        <JobCard />
-        <JobCard />
-        <JobCard />
-        <JobCard />
+        {jobs.map(job => (
+          <Link to={`/job/${job.id}`} key={job.id}>
+            <JobCard job={job} />
+          </Link>
+        ))}
       </JobSection>
-      <MoreBtn type='primary' size={'large'}>
-        더보기
-      </MoreBtn>
+      {jobs.length > 9 && (
+        <MoreBtn type='primary' size={'large'}>
+          더보기
+        </MoreBtn>
+      )}
     </>
   );
 };
