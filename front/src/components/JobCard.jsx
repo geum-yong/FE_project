@@ -14,6 +14,7 @@ const CardWrapper = styled.div`
   box-shadow: 0 0 1px 0 rgba(8, 11, 14, 0.06), 0 16px 16px -1px rgba(8, 11, 14, 0.1);
   background: #fff;
   transition: 0.5s;
+  cursor: pointer;
 
   :hover {
     transform: scale(1.05);
@@ -69,9 +70,9 @@ const CardWrapper = styled.div`
   }
 `;
 
-const JobCard = ({ job }) => {
+const JobCard = ({ job, onClickCard }) => {
   return (
-    <CardWrapper>
+    <CardWrapper onClick={onClickCard(job.id)}>
       <div className='logo'>
         {job.imgPath && <img src={`http://localhost:3050/img/${job.imgPath}`} alt={`${job.companyName} 로고`} />}
         {!job.imgPath && <img src='http://localhost:3050/img/noImage.png' alt='로고 이미지 없음' />}

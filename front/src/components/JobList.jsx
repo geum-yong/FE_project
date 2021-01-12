@@ -1,8 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button } from 'antd';
-import JobCard from './JobCard';
+import { Button, Modal } from 'antd';
+import JobCardContainer from '../containers/JobCardContainer';
 
 const JobSection = styled.section`
   display: grid;
@@ -26,15 +25,13 @@ const MoreBtn = styled(Button)`
   width: 200px;
 `;
 
-const JobList = ({ jobs }) => {
+const JobList = ({ jobs, isModalVisible, handleOk, handleCancel }) => {
   return (
     <>
       <JobSection>
         <h2 className='a11y-hidden'>job 리스트</h2>
         {jobs.map(job => (
-          <Link to={`/job/${job.id}`} key={job.id}>
-            <JobCard job={job} />
-          </Link>
+          <JobCardContainer key={job.id} job={job} />
         ))}
       </JobSection>
       {jobs.length > 9 && (
@@ -42,6 +39,10 @@ const JobList = ({ jobs }) => {
           더보기
         </MoreBtn>
       )}
+      <Modal title='로그인 필요' visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+        <p>회사에 대한 상세정보를 보기 위해서는 로그인이 필요합니다.</p>
+        <p>로그인 화면으로 이동할까요?</p>
+      </Modal>
     </>
   );
 };

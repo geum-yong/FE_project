@@ -28,10 +28,17 @@ const initialState = {
     },
   ],
   tags: [],
+  isModalVisible: false,
 };
+
+const SHOW_MODAL = 'job/SHOW_MODAL';
+const CLOSE_MODAL = 'job/CLOSE_MODAL';
 
 const GET_JOB_LIST_ASYNC = 'job/GET_JOB_LIST';
 const GET_JOB_LIST_ASYNC_SUCCESS = 'job/GET_JOB_LIST_ASYNC_SUCCESS';
+
+export const showModal = createAction(SHOW_MODAL);
+export const closeModal = createAction(CLOSE_MODAL);
 
 export const getJobListAsync = createAction(GET_JOB_LIST_ASYNC);
 
@@ -61,8 +68,17 @@ export function* jobSaga() {
 const job = handleActions(
   {
     [GET_JOB_LIST_ASYNC_SUCCESS]: (state, action) => ({
+      ...state,
       jobs: action.payload.jobs,
       tags: action.payload.tags,
+    }),
+    [SHOW_MODAL]: state => ({
+      ...state,
+      isModalVisible: true,
+    }),
+    [CLOSE_MODAL]: state => ({
+      ...state,
+      isModalVisible: false,
     }),
   },
   initialState

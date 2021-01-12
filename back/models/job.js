@@ -41,7 +41,6 @@ const JobSchema = new Schema({
   },
   imgPath: {
     type: String,
-    required: true,
   },
   companyName: {
     type: String,
