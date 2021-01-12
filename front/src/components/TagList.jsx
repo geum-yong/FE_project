@@ -1,12 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Tag } from 'antd';
+import { Tag, Button } from 'antd';
 
 const TagSection = styled.section`
   padding-top: 15px;
+  text-align: center;
 
   > div {
     line-height: 1.8;
+
+    > span {
+      cursor: pointer;
+    }
   }
 
   @media (min-width: 768px) {
@@ -21,24 +26,42 @@ function log(e) {
   console.log(e);
 }
 
-const TagList = () => {
+const TagList = ({ mode, tags, selectTags, openTags, onClickAllBtn, onOpenTags, onClickTag }) => {
   return (
     <TagSection>
-      <div>
-        <Tag color='green' closable onClose={log}>
-          Tag 2
-        </Tag>
-        <Tag color='green' closable onClose={log}>
-          Tag 2
-        </Tag>
-        <Tag color='blue'>blue</Tag>
-        <Tag color='blue'>blue</Tag>
-        <Tag color='blue'>blue</Tag>
-        <Tag color='blue'>blue</Tag>
-        <Tag color='blue'>blue</Tag>
-        <Tag color='blue'>blue</Tag>
-        <Tag color='volcano'>. . .</Tag>
-      </div>
+      {mode === 'all' ? (
+        <div>
+          {selectTags &&
+            selectTags.map(tag => (
+              <Tag key={tag} color='green' closable onClose={log}>
+                {tag}
+              </Tag>
+            ))}
+          {tags &&
+            tags.map((tag, i) => {
+              if (i > 5 && !openTags) return null;
+              return (
+                <Tag key={tag} color='blue' onClick={onClickTag(tag)}>
+                  {tag}
+                </Tag>
+              );
+            })}
+          {tags.length > 6 &&
+            (!openTags ? (
+              <Tag key={'openBtn'} color='volcano' onClick={onOpenTags}>
+                . . .
+              </Tag>
+            ) : (
+              <Tag key={'closeBtn'} color='volcano' onClick={onOpenTags}>
+                닫기
+              </Tag>
+            ))}
+        </div>
+      ) : (
+        <Button type='primary' onClick={onClickAllBtn}>
+          전체 공고 보기
+        </Button>
+      )}
     </TagSection>
   );
 };

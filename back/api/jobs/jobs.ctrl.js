@@ -14,6 +14,53 @@ exports.list = async (req, res) => {
   }
 };
 
+// 공고 검색
+exports.search = async (req, res) => {
+  const { companyName } = req.params;
+
+  try {
+    const jobs = await Job.find({ deletedDate: null, companyName: { $regex: companyName, $options: 'i' } });
+
+    res.send({ message: 'list success', jobs });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: 'list fail', error: e });
+  }
+};
+
+// tags 조회
+exports.getTags = async (req, res) => {
+  try {
+    let tags = [];
+    const jobs = await Job.find({ deletedDate: null });
+
+    jobs.forEach(job => {
+      tags = [...tags, ...job.skills];
+    });
+
+    tags = [...new Set(tags)];
+
+    res.send({ message: 'list success', tags });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: 'list fail', error: e });
+  }
+};
+
+// tag에 따른 job list 조회
+exports.listByTags = async (req, res) => {
+  try {
+    const { tagString } = req.params;
+
+    const jobs = await Job.find({ deletedDate: null, skills: { $in: tagString.split(' ') } });
+
+    res.send({ message: 'list success', jobs });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: 'list fail', error: e });
+  }
+};
+
 // 특정 공고 응답
 exports.find = async (req, res) => {
   const { id } = req.params;
@@ -35,7 +82,7 @@ exports.find = async (req, res) => {
 // 공고 등록
 exports.write = async (req, res) => {
   const {
-    userEmail,
+    userToken,
     imgPath,
     companyName,
     exprerienceLevel,
@@ -53,7 +100,7 @@ exports.write = async (req, res) => {
   } = req.body;
 
   if (
-    !userEmail ||
+    !userToken ||
     !imgPath ||
     !companyName ||
     !exprerienceLevel ||
@@ -75,7 +122,7 @@ exports.write = async (req, res) => {
 
     const job = await Job.create({
       id,
-      userEmail,
+      userToken,
       imgPath,
       companyName,
       exprerienceLevel,
@@ -92,7 +139,7 @@ exports.write = async (req, res) => {
       other,
     });
 
-    res.send({ message: 'write success', job });
+    await res.send({ message: 'write success', job });
   } catch (e) {
     console.error(e);
     res.status(500).send({ message: 'write fail', error: e });

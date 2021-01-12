@@ -4,6 +4,9 @@ const jobsCtrl = require('./jobs.ctrl');
 const router = express.Router();
 
 router.get('/', jobsCtrl.list);
+router.get('/find/:companyName', jobsCtrl.search);
+router.get('/tags', jobsCtrl.getTags);
+router.get('/tags/:tagString', jobsCtrl.listByTags);
 router.get('/:id', jobsCtrl.find);
 router.post('/', jobsCtrl.write);
 router.put('/like', jobsCtrl.like);

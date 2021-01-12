@@ -5,6 +5,7 @@ import AppWrapper from '../components/AppWrapper';
 
 const AppContainer = ({ children }) => {
   const loginState = useSelector(state => state.user.login);
+  const mode = useSelector(state => state.user.mode);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -13,7 +14,7 @@ const AppContainer = ({ children }) => {
     }
   }, [loginState, dispatch]);
 
-  return <AppWrapper>{children}</AppWrapper>;
+  return <AppWrapper mode={mode}>{children}</AppWrapper>;
 };
 
 export default AppContainer;

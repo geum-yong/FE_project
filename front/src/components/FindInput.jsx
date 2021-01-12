@@ -16,9 +16,7 @@ const FindSection = styled.section`
   }
 `;
 
-const onSearch = value => console.log(value);
-
-const FindInput = () => {
+const FindInput = ({ onSearch }) => {
   return (
     <FindSection>
       <h2 className='a11y-hidden'>검색창</h2>

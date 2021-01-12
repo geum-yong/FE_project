@@ -7,6 +7,7 @@ import { showModal } from '../modules/job';
 const JobCardContainer = ({ job, history }) => {
   const loginState = useSelector(state => state.user.login);
   const dispatch = useDispatch();
+  const tags = [];
 
   const onClickCard = useCallback(
     id => () => {
@@ -20,7 +21,13 @@ const JobCardContainer = ({ job, history }) => {
     [dispatch, loginState, history]
   );
 
-  return <JobCard job={job} onClickCard={onClickCard} />;
+  job.skills.forEach((skill, i) => {
+    if (i > 4) return;
+
+    tags.push(skill);
+  });
+
+  return <JobCard job={job} tags={tags} onClickCard={onClickCard} />;
 };
 
 export default memo(withRouter(JobCardContainer));

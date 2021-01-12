@@ -1,19 +1,19 @@
 import React from 'react';
-import FindInput from '../components/FindInput';
 import Footer from '../components/Footer';
 import Introduce from '../components/Introduce';
-import TagList from '../components/TagList';
 import AppContainer from '../containers/AppContainer';
+import FindInputContainer from '../containers/FindInputContainer';
 import HeaderContainer from '../containers/HeaderContainer';
 import JobListContainer from '../containers/JobListContainer';
+import TagListContainer from '../containers/TagListContainer';
 
 const Home = () => {
   return (
     <AppContainer>
       <HeaderContainer />
       <Introduce />
-      <FindInput />
-      <TagList />
+      <FindInputContainer />
+      <TagListContainer />
       <JobListContainer />
       <Footer />
     </AppContainer>

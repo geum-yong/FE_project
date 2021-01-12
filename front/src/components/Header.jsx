@@ -1,7 +1,6 @@
 import React from 'react';
 import dotenv from 'dotenv';
 import { GoogleLogout } from 'react-google-login';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Menu, Dropdown, Button } from 'antd';
 import { HeartTwoTone, LoginOutlined, MenuOutlined, LogoutOutlined } from '@ant-design/icons';
@@ -82,11 +81,11 @@ const Header = ({ loginState, onMoveToLogin, onLogoutSucess }) => {
   return (
     <Wrapper>
       <h1>
-        <Link to='/'>
+        <a href='/'>
           프론트엔드 개발자
           <br />
           취업 소식
-        </Link>
+        </a>
       </h1>
       <Dropdown overlay={menu} trigger={['click']} placement='bottomCenter'>
         <a href='/' className='ant-dropdown-link' onClick={e => e.preventDefault()}>

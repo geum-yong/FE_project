@@ -27,7 +27,7 @@ const JobSchema = new Schema({
     type: Number,
     required: true,
   },
-  userEmail: {
+  userToken: {
     type: String,
     required: true,
   },

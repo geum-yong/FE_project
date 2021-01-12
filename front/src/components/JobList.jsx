@@ -30,9 +30,7 @@ const JobList = ({ jobs, isModalVisible, handleOk, handleCancel }) => {
     <>
       <JobSection>
         <h2 className='a11y-hidden'>job 리스트</h2>
-        {jobs.map(job => (
-          <JobCardContainer key={job.id} job={job} />
-        ))}
+        {jobs.length === 0 ? <p>검색결과가 없습니다.</p> : jobs.map(job => <JobCardContainer key={job.id} job={job} />)}
       </JobSection>
       {jobs.length > 9 && (
         <MoreBtn type='primary' size={'large'}>

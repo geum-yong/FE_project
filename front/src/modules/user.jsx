@@ -44,8 +44,6 @@ function* checkUserSaga({ payload }) {
   try {
     const res = yield axios.get(`${SERVER_URL}/api/users/${payload}`);
 
-    console.log(res);
-
     if (res.data.message === 'find fail') return;
 
     yield put({

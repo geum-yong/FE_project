@@ -70,7 +70,7 @@ const CardWrapper = styled.div`
   }
 `;
 
-const JobCard = ({ job, onClickCard }) => {
+const JobCard = ({ job, tags, onClickCard }) => {
   return (
     <CardWrapper onClick={onClickCard(job.id)}>
       <div className='logo'>
@@ -83,16 +83,13 @@ const JobCard = ({ job, onClickCard }) => {
         {job.exprerienceLevel === 2 && '경력'}
         {job.exprerienceLevel === 3 && '경력 무관'}
       </p>
-      <p className='company-description'>{`${job.deadline}까지`}</p>
+      <p className='company-description'>{job.deadline === '상시' ? '상시 모집' : `${job.deadline}까지`}</p>
       <div className='company-tags'>
-        {job.skills.map((skill, i) => {
-          if (i > 5) return;
-          return (
-            <Tag color='blue' key={skill + i}>
-              {skill}
-            </Tag>
-          );
-        })}
+        {tags.map((tag, i) => (
+          <Tag color='blue' key={tag + i}>
+            {tag}
+          </Tag>
+        ))}
       </div>
       <div className='like-cnt'>
         <HeartTwoTone twoToneColor='#eb2f96' />
