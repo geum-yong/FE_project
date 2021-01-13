@@ -5,9 +5,15 @@ const Job = require('../../models/job');
 // 공고 리스트 응답
 exports.list = async (req, res) => {
   try {
-    const jobs = await Job.find({ deletedDate: null });
+    const { rollingCnt } = req.query;
 
-    res.send({ message: 'list success', jobs });
+    const jobsCnt = await Job.find({ deletedDate: null }).countDocuments();
+    const jobs = await Job.find({ deletedDate: null })
+      .skip(9 * rollingCnt)
+      .sort({ _id: -1 })
+      .limit(9);
+
+    res.send({ message: 'list success', jobs, jobsCnt });
   } catch (e) {
     console.error(e);
     res.status(500).send({ message: 'list fail', error: e });
@@ -17,11 +23,16 @@ exports.list = async (req, res) => {
 // 공고 검색
 exports.search = async (req, res) => {
   const { companyName } = req.params;
+  const { rollingCnt } = req.query;
 
   try {
-    const jobs = await Job.find({ deletedDate: null, companyName: { $regex: companyName, $options: 'i' } });
+    const jobsCnt = await Job.find({ deletedDate: null, companyName: { $regex: companyName, $options: 'i' } }).countDocuments();
+    const jobs = await Job.find({ deletedDate: null, companyName: { $regex: companyName, $options: 'i' } })
+      .skip(9 * rollingCnt)
+      .sort({ _id: -1 })
+      .limit(9);
 
-    res.send({ message: 'list success', jobs });
+    res.send({ message: 'list success', jobs, jobsCnt });
   } catch (e) {
     console.error(e);
     res.status(500).send({ message: 'list fail', error: e });
@@ -51,10 +62,15 @@ exports.getTags = async (req, res) => {
 exports.listByTags = async (req, res) => {
   try {
     const { tagString } = req.params;
+    const { rollingCnt } = req.query;
 
-    const jobs = await Job.find({ deletedDate: null, skills: { $in: tagString.split(' ') } });
+    const jobsCnt = await Job.find({ deletedDate: null, skills: { $in: tagString.split(' ') } }).countDocuments();
+    const jobs = await Job.find({ deletedDate: null, skills: { $in: tagString.split(' ') } })
+      .skip(9 * rollingCnt)
+      .sort({ _id: -1 })
+      .limit(9);
 
-    res.send({ message: 'list success', jobs });
+    res.send({ message: 'list success', jobs, jobsCnt });
   } catch (e) {
     console.error(e);
     res.status(500).send({ message: 'list fail', error: e });

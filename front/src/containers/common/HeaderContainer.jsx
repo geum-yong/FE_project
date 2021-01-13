@@ -1,8 +1,8 @@
 import React, { memo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { logout } from '../modules/user';
-import Header from '../components/Header';
+import { logout } from '../../modules/user';
+import Header from '../../components/common/Header';
 
 const HeaderContainer = ({ history }) => {
   const loginState = useSelector(state => state.user.login);

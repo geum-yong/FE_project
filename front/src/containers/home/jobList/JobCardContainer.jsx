@@ -1,8 +1,8 @@
 import React, { memo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import JobCard from '../components/JobCard';
-import { showModal } from '../modules/job';
+import JobCard from '../../../components/home/jobList/JobCard';
+import { showModal } from '../../../modules/jobs';
 
 const JobCardContainer = ({ job, history }) => {
   const loginState = useSelector(state => state.user.login);

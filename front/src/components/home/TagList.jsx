@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Tag, Button } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 
 const TagSection = styled.section`
   padding-top: 15px;
@@ -11,6 +12,11 @@ const TagSection = styled.section`
 
     > span {
       cursor: pointer;
+
+      > span {
+        margin-left: 7px;
+        font-size: 10px;
+      }
     }
   }
 
@@ -22,19 +28,16 @@ const TagSection = styled.section`
   }
 `;
 
-function log(e) {
-  console.log(e);
-}
-
-const TagList = ({ mode, tags, selectTags, openTags, onClickAllBtn, onOpenTags, onClickTag }) => {
+const TagList = ({ mode, tags, selectedTags, openTags, onClickAllBtn, onOpenTags, onClickTag, onClickSelectedTag }) => {
   return (
     <TagSection>
-      {mode === 'all' ? (
+      {mode === 'all' || mode === 'tag' ? (
         <div>
-          {selectTags &&
-            selectTags.map(tag => (
-              <Tag key={tag} color='green' closable onClose={log}>
+          {selectedTags &&
+            selectedTags.map(tag => (
+              <Tag key={tag} color='green' onClick={onClickSelectedTag(tag)}>
                 {tag}
+                <CloseOutlined />
               </Tag>
             ))}
           {tags &&

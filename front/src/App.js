@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import GlobalStyles from './components/GlobalStyles';
-import Error404 from './pages/Error404';
+import GlobalStyles from './components/common/GlobalStyles';
+import NotFound from './pages/NotFound';
 
 import Home from './pages/Home';
 import Job from './pages/Job';
@@ -16,7 +16,7 @@ function App() {
         <Route path='/job/:id' component={Job} exact />
         <Route path='/jobForm' component={JobForm} />
         <Route path='/login' component={Login} />
-        <Route component={Error404} />
+        <Route component={NotFound} />
       </Switch>
       <GlobalStyles />
     </>

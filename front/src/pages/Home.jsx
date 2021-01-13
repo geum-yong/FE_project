@@ -1,11 +1,11 @@
 import React from 'react';
-import Footer from '../components/Footer';
-import Introduce from '../components/Introduce';
-import AppContainer from '../containers/AppContainer';
-import FindInputContainer from '../containers/FindInputContainer';
-import HeaderContainer from '../containers/HeaderContainer';
-import JobListContainer from '../containers/JobListContainer';
-import TagListContainer from '../containers/TagListContainer';
+import Footer from '../components/home/Footer';
+import Introduce from '../components/home/Introduce';
+import AppContainer from '../containers/common/AppContainer';
+import FindInputContainer from '../containers/home/FindInputContainer';
+import HeaderContainer from '../containers/common/HeaderContainer';
+import JobListContainer from '../containers/home/jobList/JobListContainer';
+import TagListContainer from '../containers/home/TagListContainer';
 
 const Home = () => {
   return (

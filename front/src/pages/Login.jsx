@@ -1,12 +1,12 @@
 import React from 'react';
-import AppWrapper from '../components/AppWrapper';
-import LoginContainer from '../containers/LoginContainer';
+import AppContainer from '../containers/common/AppContainer';
+import LoginContainer from '../containers/login/LoginContainer';
 
 const Login = () => {
   return (
-    <AppWrapper>
+    <AppContainer>
       <LoginContainer />
-    </AppWrapper>
+    </AppContainer>
   );
 };
 

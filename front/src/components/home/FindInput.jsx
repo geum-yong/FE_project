@@ -16,11 +16,11 @@ const FindSection = styled.section`
   }
 `;
 
-const FindInput = ({ onSearch }) => {
+const FindInput = ({ inputValue, onChange }) => {
   return (
     <FindSection>
       <h2 className='a11y-hidden'>검색창</h2>
-      <Search placeholder='회사명을 검색해보세요.' size='large' onSearch={onSearch} enterButton />
+      <Search placeholder='회사명을 검색해보세요.' size='large' value={inputValue} onChange={onChange} enterButton />
     </FindSection>
   );
 };

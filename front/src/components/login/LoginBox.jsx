@@ -59,7 +59,6 @@ const LoginWrapper = styled.section`
 const GoogleLoginCustom = styled(GoogleLogin)`
   margin: 80px auto 0 !important;
   padding: 4px 10px !important;
-  font-family: 'jua' !important;
   font-size: 16px !important;
   box-shadow: none !important;
   background: #e24939 !important;

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import AppWrapper from '../components/AppWrapper';
+import AppWrapper from '../components/common/AppWrapper';
 
 const ErrorWrapper = styled.div`
   position: absolute;
