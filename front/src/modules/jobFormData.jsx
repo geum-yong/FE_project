@@ -1,7 +1,12 @@
 import { createAction, handleActions } from 'redux-actions';
+import { put, takeLatest } from 'redux-saga/effects';
+import SERVER_URL from '../lib/serverUrl';
+
+const axios = require('axios');
 
 const initialState = {
   jobData: {
+    imgPath: '',
     img: '',
     previewURL: '',
     companyName: '',
@@ -35,6 +40,10 @@ const CHANGE_TAGS = 'job/CHANGE_TAGS';
 const CHANGE_DATE = 'job/CHANGE_DATE';
 const CHANGE_CHECK = 'job/CHANGE_CHECK';
 
+const UPLOAD_IMAGE = 'job/UPLOAD_IMAGE';
+const UPLOAD_IMAGE_SUCCESS = 'job/UPLOAD_IMAGE_SUCCESS';
+const POST_JOB = 'job/POST_JOB';
+
 // 리덕스 액션 생성자
 export const changeImage = createAction(CHANGE_IMAGE);
 export const changePreviewURL = createAction(CHANGE_PREVIEW_URL);
@@ -44,6 +53,46 @@ export const changeTagInputValue = createAction(CHANGE_TAG_INPUT_VALUE);
 export const changeTags = createAction(CHANGE_TAGS);
 export const changeDate = createAction(CHANGE_DATE);
 export const changecheck = createAction(CHANGE_CHECK);
+
+// 사가 액션 생성자
+export const uploadImage = createAction(UPLOAD_IMAGE);
+export const postJob = createAction(POST_JOB);
+
+function* uploadImageSaga({ payload }) {
+  try {
+    const res = yield axios.post(`${SERVER_URL}/api/jobs/upload`, payload);
+
+    if (!res.data) return;
+
+    yield put({
+      type: UPLOAD_IMAGE_SUCCESS,
+      payload: res.data.url,
+    });
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function* postJobSaga({ payload }) {
+  try {
+    const res = yield axios.post(`${SERVER_URL}/api/jobs`, payload);
+
+    console.log(res);
+    if (!res.data) return;
+
+    // yield put({
+    //   type: UPLOAD_IMAGE_SUCCESS,
+    //   payload: res.data.url,
+    // });
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export function* jobFormDataSaga() {
+  yield takeLatest(UPLOAD_IMAGE, uploadImageSaga);
+  yield takeLatest(POST_JOB, postJobSaga);
+}
 
 const jobFormData = handleActions(
   {
@@ -92,6 +141,13 @@ const jobFormData = handleActions(
       jobData: {
         ...state.jobData,
         checked: action.payload,
+      },
+    }),
+    [UPLOAD_IMAGE_SUCCESS]: (state, action) => ({
+      ...state,
+      jobData: {
+        ...state.jobData,
+        imgPath: action.payload,
       },
     }),
   },

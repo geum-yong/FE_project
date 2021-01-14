@@ -101,7 +101,7 @@ exports.write = async (req, res) => {
     userToken,
     imgPath,
     companyName,
-    exprerienceLevel,
+    experienceLevel,
     introduce,
     task,
     condition,
@@ -117,9 +117,8 @@ exports.write = async (req, res) => {
 
   if (
     !userToken ||
-    !imgPath ||
     !companyName ||
-    !exprerienceLevel ||
+    !experienceLevel ||
     !introduce ||
     !task ||
     !condition ||
@@ -128,7 +127,6 @@ exports.write = async (req, res) => {
     !welfare ||
     !deadline ||
     !address1 ||
-    !address2 ||
     !source
   )
     return res.status(404).send({ message: 'write fail', error: 'null of request' });
@@ -141,7 +139,7 @@ exports.write = async (req, res) => {
       userToken,
       imgPath,
       companyName,
-      exprerienceLevel,
+      experienceLevel,
       introduce,
       task,
       condition,
@@ -345,4 +343,9 @@ exports.replaceComment = async (req, res) => {
     console.error(e);
     res.status(500).send({ message: 'replace fail', error: e });
   }
+};
+
+// 이미지 업로드
+exports.upload = async (req, res) => {
+  res.json({ url: `/img/${req.file.filename}` });
 };

@@ -168,7 +168,7 @@ function* getListMoreSaga() {
   }
 }
 
-export function* jobSaga() {
+export function* jobsSaga() {
   yield takeLatest(GET_TAG_LIST_ASYNC, getTagsSaga);
   yield takeLatest(GET_JOB_LIST_ASYNC, getListSaga);
   yield takeLatest(GET_JOB_FIND_ASYNC, getFindJobSaga);

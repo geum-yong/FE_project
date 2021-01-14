@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
 import { all } from 'redux-saga/effects';
 import user, { userSaga } from './user';
-import jobs, { jobSaga } from './jobs';
-import jobFormData from './jobFormData';
+import jobs, { jobsSaga } from './jobs';
+import jobFormData, { jobFormDataSaga } from './jobFormData';
 
 const rootReducer = combineReducers({
   user,
@@ -11,7 +11,7 @@ const rootReducer = combineReducers({
 });
 
 export function* rootSaga() {
-  yield all([userSaga(), jobSaga()]);
+  yield all([userSaga(), jobsSaga(), jobFormDataSaga()]);
 }
 
 export default rootReducer;
