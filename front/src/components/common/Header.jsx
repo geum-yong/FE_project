@@ -44,7 +44,7 @@ const Wrapper = styled.header`
   }
 `;
 
-const Header = ({ loginState, onMoveToLogin, onLogoutSucess }) => {
+const Header = ({ path, loginState, onMoveToLogin, onLogoutSucess }) => {
   const menu = (
     <Menu>
       {loginState && (
@@ -88,7 +88,7 @@ const Header = ({ loginState, onMoveToLogin, onLogoutSucess }) => {
           <MenuOutlined />
         </a>
       </Dropdown>
-      {loginState && <Button icon={<HeartTwoTone twoToneColor='#eb2f96' />}>관심회사</Button>}
+      {loginState && path === '/' && <Button icon={<HeartTwoTone twoToneColor='#eb2f96' />}>관심회사</Button>}
       {loginState ? (
         <GoogleLogout
           clientId={process.env.REACT_APP_GOOGLE_ID}

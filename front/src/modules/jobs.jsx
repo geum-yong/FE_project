@@ -16,7 +16,7 @@ const initialState = {
       task: '',
       condition: '',
       preferentialTreatment: '', // 우대사항
-      skills: [], // 보유 기술 ["react", "vue"]
+      skills: [], // 기술스택 ["react", "vue"]
       welfare: '',
       deadline: '',
       address1: '',

@@ -81,7 +81,7 @@ const JobSchema = new Schema({
   },
   address2: {
     type: String,
-    required: true,
+    default: '',
   },
   source: {
     type: String,
