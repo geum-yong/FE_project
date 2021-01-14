@@ -2,10 +2,11 @@ import React, { useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Modal } from 'antd';
 import JobFormList from '../../components/jobForm/JobFormList';
-import { changeImage, changePreviewURL, changeInputValue, changeDate, changecheck } from '../../modules/jobFormData';
+import { changeImage, changePreviewURL, changeInputValue, changeDate, changecheck, uploadImage, postJob } from '../../modules/jobFormData';
 
 const JobFormDataContainer = () => {
   const userToken = useSelector(state => state.user.token);
+  const imgPath = useSelector(state => state.jobFormData.jobData.imgPath);
   const imageInput = useRef();
   const imageFile = useSelector(state => state.jobFormData.jobData.img);
   const previewURL = useSelector(state => state.jobFormData.jobData.previewURL);
@@ -20,7 +21,9 @@ const JobFormDataContainer = () => {
   const deadline = useSelector(state => state.jobFormData.jobData.deadline);
   const selectedDate = useSelector(state => state.jobFormData.jobData.selectedDate);
   const address1 = useSelector(state => state.jobFormData.jobData.address1);
+  const address2 = useSelector(state => state.jobFormData.jobData.address2);
   const source = useSelector(state => state.jobFormData.jobData.source);
+  const other = useSelector(state => state.jobFormData.jobData.other);
   const checked = useSelector(state => state.jobFormData.jobData.checked);
   const dispatch = useDispatch();
 
@@ -70,8 +73,6 @@ const JobFormDataContainer = () => {
     dispatch(changecheck(e.target.checked));
   };
 
-  console.log(imageFile);
-
   const onSubmit = () => {
     if (userToken !== localStorage.getItem('FESITE_TOKEN')) {
       Modal.error({
@@ -99,9 +100,34 @@ const JobFormDataContainer = () => {
         title: '양식 오류',
         content: '(선택)을 제외한 양식은 작성해야됩니다.',
       });
-      // eslint-disable-next-line no-useless-return
       return;
     }
+
+    const formData = new FormData();
+    formData.append('img', imageFile);
+    dispatch(uploadImage(formData));
+
+    const newJobDeadline = selectedDate === 1 ? '상시' : deadline;
+
+    const newJob = {
+      userToken,
+      imgPath,
+      companyName,
+      experienceLevel,
+      introduce,
+      task,
+      condition,
+      preferentialTreatment,
+      skills,
+      welfare,
+      deadline: newJobDeadline,
+      address1,
+      address2,
+      source,
+      other,
+    };
+
+    dispatch(postJob(newJob));
   };
 
   return (
