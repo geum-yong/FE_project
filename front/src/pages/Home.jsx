@@ -6,7 +6,7 @@ import FindInputContainer from '../containers/home/FindInputContainer';
 import HeaderContainer from '../containers/common/HeaderContainer';
 import JobListContainer from '../containers/home/jobList/JobListContainer';
 import TagListContainer from '../containers/home/TagListContainer';
-import PostJobBtn from '../components/home/PostJobBtn';
+import PostJobBtnContainer from '../containers/home/PostJobBtnContainer';
 
 const Home = () => {
   return (
@@ -16,7 +16,7 @@ const Home = () => {
       <FindInputContainer />
       <TagListContainer />
       <JobListContainer />
-      <PostJobBtn />
+      <PostJobBtnContainer />
       <Footer />
     </AppContainer>
   );

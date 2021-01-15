@@ -1,6 +1,7 @@
 import { createAction, handleActions } from 'redux-actions';
 import { put, takeLatest, throttle } from 'redux-saga/effects';
-import SERVER_URL from '../lib/serverUrl';
+
+require('dotenv').config();
 
 const axios = require('axios');
 
@@ -25,10 +26,10 @@ export const checkUserAsync = createAction(CHECK_USER_ASYNC);
 
 function* LoginSaga({ payload }) {
   try {
-    let res = yield axios.get(`${SERVER_URL}/api/users/${payload.googleId}`);
+    let res = yield axios.get(`${process.env.REACT_APP_SERVER_URL}/api/users/${payload.googleId}`);
 
     if (res.data.message === 'find fail') {
-      res = yield axios.post(`${SERVER_URL}/api/users`, {
+      res = yield axios.post(`${process.env.REACT_APP_SERVER_URL}/api/users`, {
         id: payload.googleId,
         email: payload.profileObj.email,
       });
@@ -45,7 +46,7 @@ function* LoginSaga({ payload }) {
 
 function* checkUserSaga({ payload }) {
   try {
-    const res = yield axios.get(`${SERVER_URL}/api/users/${payload}`);
+    const res = yield axios.get(`${process.env.REACT_APP_SERVER_URL}/api/users/${payload}`);
 
     if (res.data.message === 'find fail') return;
 

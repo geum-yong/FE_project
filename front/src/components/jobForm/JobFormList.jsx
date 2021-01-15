@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, Input, Radio, DatePicker, Checkbox, Space } from 'antd';
-import SERVER_URL from '../../lib/serverUrl';
 import TagFormContainer from '../../containers/jobForm/TagFormContainer';
 import MapContainer from '../../containers/common/MapContainer';
+
+require('dotenv').config();
 
 const { TextArea } = Input;
 
@@ -83,7 +84,7 @@ const JobFormData = ({
           📕<span>회사 로고</span>
         </p>
         <div className='form-logo'>
-          <img src={imageFile === '' ? `${SERVER_URL}/img/noImage.png` : `${previewURL}`} alt='회사 로고' />
+          <img src={imageFile === '' ? `${process.env.REACT_APP_SERVER_URL}/img/noImage.png` : `${previewURL}`} alt='회사 로고' />
         </div>
         <Space>
           <input type='file' name='imgFile' hidden ref={imageInput} onChange={onChangeImage} accept='.jpg,.png,.jpeg,.gif' />

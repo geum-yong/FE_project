@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Tag } from 'antd';
 import { HeartTwoTone } from '@ant-design/icons';
-import SERVER_URL from '../../../lib/serverUrl';
+
+require('dotenv').config();
 
 const CardWrapper = styled.div`
   position: relative;
@@ -77,8 +78,8 @@ const JobCard = ({ job, tags, onClickCard }) => {
   return (
     <CardWrapper onClick={onClickCard(job.id)}>
       <div className='logo'>
-        {job.imgPath && <img src={`${SERVER_URL}/img/${job.imgPath}`} alt={`${job.companyName} 로고`} />}
-        {!job.imgPath && <img src={`${SERVER_URL}/img/noImage.png`} alt='로고 이미지 없음' />}
+        {job.imgPath && <img src={`${process.env.REACT_APP_SERVER_URL}/img/${job.imgPath}`} alt={`${job.companyName} 로고`} />}
+        {!job.imgPath && <img src={`${process.env.REACT_APP_SERVER_URL}/img/noImage.png`} alt='로고 이미지 없음' />}
       </div>
       <p className='company-name'>{job.companyName}</p>
       <p className='company-description'>

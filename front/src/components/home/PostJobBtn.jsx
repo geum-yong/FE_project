@@ -23,18 +23,19 @@ const PostBtn = styled(Link)`
     bottom: 50px;
     right: 50px;
   }
-
-  @media (min-width: 992px) {
-  }
 `;
 
-const PostJobBtn = () => {
+const PostJobBtn = ({ loginState }) => {
   return (
-    <PostBtn to='/jobForm'>
-      공고
-      <br />
-      등록
-    </PostBtn>
+    <>
+      {loginState && (
+        <PostBtn to='/jobForm'>
+          공고
+          <br />
+          등록
+        </PostBtn>
+      )}
+    </>
   );
 };
 

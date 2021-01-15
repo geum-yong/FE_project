@@ -1,6 +1,7 @@
 import { createAction, handleActions } from 'redux-actions';
 import { put, takeLatest, select } from 'redux-saga/effects';
-import SERVER_URL from '../lib/serverUrl';
+
+require('dotenv').config();
 
 const axios = require('axios');
 
@@ -58,7 +59,7 @@ export const postJob = createAction(POST_JOB);
 
 function* postJobSaga({ payload }) {
   try {
-    const imgUrlRes = yield axios.post(`${SERVER_URL}/api/jobs/upload`, payload);
+    const imgUrlRes = yield axios.post(`${process.env.REACT_APP_SERVER_URL}/api/jobs/upload`, payload);
 
     if (!imgUrlRes.data) return;
 
@@ -98,7 +99,7 @@ function* postJobSaga({ payload }) {
       other,
     };
 
-    const jobRes = yield axios.post(`${SERVER_URL}/api/jobs`, newJob);
+    const jobRes = yield axios.post(`${process.env.REACT_APP_SERVER_URL}/api/jobs`, newJob);
 
     yield put({
       type: POST_JOB_SUCCESS,

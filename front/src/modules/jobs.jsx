@@ -1,6 +1,7 @@
 import { createAction, handleActions } from 'redux-actions';
 import { put, select, takeLatest } from 'redux-saga/effects';
-import SERVER_URL from '../lib/serverUrl';
+
+require('dotenv').config();
 
 const axios = require('axios');
 
@@ -81,7 +82,7 @@ export const getJobMoreAsync = createAction(GET_JOB_MORE_ASYNC);
 
 function* getTagsSaga() {
   try {
-    const res = yield axios.get(`${SERVER_URL}/api/jobs/tags`);
+    const res = yield axios.get(`${process.env.REACT_APP_SERVER_URL}/api/jobs/tags`);
 
     yield put({
       type: GET_TAG_LIST_ASYNC_SUCCESS,
@@ -94,7 +95,7 @@ function* getTagsSaga() {
 
 function* getListSaga() {
   try {
-    const res = yield axios.get(`${SERVER_URL}/api/jobs`);
+    const res = yield axios.get(`${process.env.REACT_APP_SERVER_URL}/api/jobs`);
 
     yield put({
       type: GET_JOB_LIST_ASYNC_SUCCESS,
@@ -108,7 +109,7 @@ function* getListSaga() {
 function* getFindJobSaga() {
   try {
     const findInputValue = yield select(state => state.jobs.findInputValue);
-    const res = yield axios.get(`${SERVER_URL}/api/jobs/find/${findInputValue}`);
+    const res = yield axios.get(`${process.env.REACT_APP_SERVER_URL}/api/jobs/find/${findInputValue}`);
 
     yield put({
       type: GET_JOB_LIST_ASYNC_SUCCESS,
@@ -126,9 +127,9 @@ function* getListTagsSaga() {
 
     if (selectTags.length > 0) {
       const tagString = selectTags.join(' ');
-      res = yield axios.get(`${SERVER_URL}/api/jobs/tags/${tagString}`);
+      res = yield axios.get(`${process.env.REACT_APP_SERVER_URL}/api/jobs/tags/${tagString}`);
     } else {
-      res = yield axios.get(`${SERVER_URL}/api/jobs`);
+      res = yield axios.get(`${process.env.REACT_APP_SERVER_URL}/api/jobs`);
     }
 
     yield put({
@@ -147,14 +148,14 @@ function* getListMoreSaga() {
     const rollingCnt = yield select(state => state.jobs.rollingCnt);
 
     if (mode === 'all') {
-      res = yield axios.get(`${SERVER_URL}/api/jobs?rollingCnt=${rollingCnt}`);
+      res = yield axios.get(`${process.env.REACT_APP_SERVER_URL}/api/jobs?rollingCnt=${rollingCnt}`);
     } else if (mode === 'tag') {
       const selectTags = yield select(state => state.jobs.selectedTags);
       const tagString = selectTags.join(' ');
-      res = yield axios.get(`${SERVER_URL}/api/jobs/tags/${tagString}?rollingCnt=${rollingCnt}`);
+      res = yield axios.get(`${process.env.REACT_APP_SERVER_URL}/api/jobs/tags/${tagString}?rollingCnt=${rollingCnt}`);
     } else if (mode === 'find') {
       const findInputValue = yield select(state => state.jobs.findInputValue);
-      res = yield axios.get(`${SERVER_URL}/api/jobs/find/${findInputValue}?rollingCnt=${rollingCnt}`);
+      res = yield axios.get(`${process.env.REACT_APP_SERVER_URL}/api/jobs/find/${findInputValue}?rollingCnt=${rollingCnt}`);
     }
 
     // console.log(res.data.jobs);

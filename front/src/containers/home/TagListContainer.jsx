@@ -44,7 +44,7 @@ const TagListContainer = () => {
     },
     [dispatch]
   );
-  console.log(`밖에서 ${selectedTags.length}`);
+
   const onClickSelectedTag = useCallback(
     tag => () => {
       dispatch(deleteTags(tag));

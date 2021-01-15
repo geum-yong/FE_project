@@ -8,8 +8,6 @@ const AppContainer = ({ children, match, history }) => {
   const loginState = useSelector(state => state.user.login);
   const dispatch = useDispatch();
 
-  console.log(match);
-
   useEffect(() => {
     if (match.path === '/login' && localStorage.getItem('FESITE_TOKEN')) {
       history.push('/');
