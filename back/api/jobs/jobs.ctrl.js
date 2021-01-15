@@ -153,7 +153,9 @@ exports.write = async (req, res) => {
       other,
     });
 
-    await res.send({ message: 'write success', job });
+    console.log(job);
+
+    res.send({ message: 'write success', job });
   } catch (e) {
     console.error(e);
     res.status(500).send({ message: 'write fail', error: e });
@@ -347,5 +349,5 @@ exports.replaceComment = async (req, res) => {
 
 // 이미지 업로드
 exports.upload = async (req, res) => {
-  res.json({ url: `/img/${req.file.filename}` });
+  res.json({ url: `${req.file.filename}` });
 };

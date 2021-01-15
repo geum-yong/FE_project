@@ -1,13 +1,14 @@
-import React, { useCallback, useRef } from 'react';
+import React, { memo, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { Modal } from 'antd';
 import JobFormList from '../../components/jobForm/JobFormList';
-import { changeImage, changePreviewURL, changeInputValue, changeDate, changecheck, uploadImage, postJob } from '../../modules/jobFormData';
+import { changeImage, changePreviewURL, changeInputValue, changeDate, changecheck, postJob } from '../../modules/jobFormData';
 
-const JobFormDataContainer = () => {
+const JobFormDataContainer = ({ history }) => {
   const userToken = useSelector(state => state.user.token);
-  const imgPath = useSelector(state => state.jobFormData.jobData.imgPath);
   const imageInput = useRef();
+  const newJobId = useSelector(state => state.jobFormData.newJobId);
   const imageFile = useSelector(state => state.jobFormData.jobData.img);
   const previewURL = useSelector(state => state.jobFormData.jobData.previewURL);
   const companyName = useSelector(state => state.jobFormData.jobData.companyName);
@@ -21,9 +22,7 @@ const JobFormDataContainer = () => {
   const deadline = useSelector(state => state.jobFormData.jobData.deadline);
   const selectedDate = useSelector(state => state.jobFormData.jobData.selectedDate);
   const address1 = useSelector(state => state.jobFormData.jobData.address1);
-  const address2 = useSelector(state => state.jobFormData.jobData.address2);
   const source = useSelector(state => state.jobFormData.jobData.source);
-  const other = useSelector(state => state.jobFormData.jobData.other);
   const checked = useSelector(state => state.jobFormData.jobData.checked);
   const dispatch = useDispatch();
 
@@ -73,7 +72,7 @@ const JobFormDataContainer = () => {
     dispatch(changecheck(e.target.checked));
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (userToken !== localStorage.getItem('FESITE_TOKEN')) {
       Modal.error({
         title: '잘못된 유저 정보',
@@ -105,29 +104,10 @@ const JobFormDataContainer = () => {
 
     const formData = new FormData();
     formData.append('img', imageFile);
-    dispatch(uploadImage(formData));
+    dispatch(postJob(formData));
 
-    const newJobDeadline = selectedDate === 1 ? '상시' : deadline;
-
-    const newJob = {
-      userToken,
-      imgPath,
-      companyName,
-      experienceLevel,
-      introduce,
-      task,
-      condition,
-      preferentialTreatment,
-      skills,
-      welfare,
-      deadline: newJobDeadline,
-      address1,
-      address2,
-      source,
-      other,
-    };
-
-    dispatch(postJob(newJob));
+    console.log('작동');
+    history.push(`/job/${newJobId}`);
   };
 
   return (
@@ -147,4 +127,4 @@ const JobFormDataContainer = () => {
   );
 };
 
-export default JobFormDataContainer;
+export default memo(withRouter(JobFormDataContainer));

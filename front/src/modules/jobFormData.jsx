@@ -1,12 +1,12 @@
 import { createAction, handleActions } from 'redux-actions';
-import { put, takeLatest } from 'redux-saga/effects';
+import { put, takeLatest, select } from 'redux-saga/effects';
 import SERVER_URL from '../lib/serverUrl';
 
 const axios = require('axios');
 
 const initialState = {
+  newJobId: 0,
   jobData: {
-    imgPath: '',
     img: '',
     previewURL: '',
     companyName: '',
@@ -40,9 +40,8 @@ const CHANGE_TAGS = 'job/CHANGE_TAGS';
 const CHANGE_DATE = 'job/CHANGE_DATE';
 const CHANGE_CHECK = 'job/CHANGE_CHECK';
 
-const UPLOAD_IMAGE = 'job/UPLOAD_IMAGE';
-const UPLOAD_IMAGE_SUCCESS = 'job/UPLOAD_IMAGE_SUCCESS';
 const POST_JOB = 'job/POST_JOB';
+const POST_JOB_SUCCESS = 'job/POST_JOB_SUCCESS';
 
 // 리덕스 액션 생성자
 export const changeImage = createAction(CHANGE_IMAGE);
@@ -55,42 +54,62 @@ export const changeDate = createAction(CHANGE_DATE);
 export const changecheck = createAction(CHANGE_CHECK);
 
 // 사가 액션 생성자
-export const uploadImage = createAction(UPLOAD_IMAGE);
 export const postJob = createAction(POST_JOB);
 
-function* uploadImageSaga({ payload }) {
+function* postJobSaga({ payload }) {
   try {
-    const res = yield axios.post(`${SERVER_URL}/api/jobs/upload`, payload);
+    const imgUrlRes = yield axios.post(`${SERVER_URL}/api/jobs/upload`, payload);
 
-    if (!res.data) return;
+    if (!imgUrlRes.data) return;
+
+    const userToken = yield select(state => state.user.token);
+    const companyName = yield select(state => state.jobFormData.jobData.companyName);
+    const experienceLevel = yield select(state => state.jobFormData.jobData.experienceLevel);
+    const introduce = yield select(state => state.jobFormData.jobData.introduce);
+    const task = yield select(state => state.jobFormData.jobData.task);
+    const condition = yield select(state => state.jobFormData.jobData.condition);
+    const preferentialTreatment = yield select(state => state.jobFormData.jobData.preferentialTreatment);
+    const skills = yield select(state => state.jobFormData.jobData.skills);
+    const welfare = yield select(state => state.jobFormData.jobData.welfare);
+    const deadline = yield select(state => state.jobFormData.jobData.deadline);
+    const selectedDate = yield select(state => state.jobFormData.jobData.selectedDate);
+    const address1 = yield select(state => state.jobFormData.jobData.address1);
+    const address2 = yield select(state => state.jobFormData.jobData.address2);
+    const source = yield select(state => state.jobFormData.jobData.source);
+    const other = yield select(state => state.jobFormData.jobData.other);
+
+    const newJobDeadline = selectedDate === 1 ? '상시' : deadline;
+
+    const newJob = {
+      userToken,
+      imgPath: imgUrlRes.data.url,
+      companyName,
+      experienceLevel,
+      introduce,
+      task,
+      condition,
+      preferentialTreatment,
+      skills,
+      welfare,
+      deadline: newJobDeadline,
+      address1,
+      address2,
+      source,
+      other,
+    };
+
+    const jobRes = yield axios.post(`${SERVER_URL}/api/jobs`, newJob);
 
     yield put({
-      type: UPLOAD_IMAGE_SUCCESS,
-      payload: res.data.url,
+      type: POST_JOB_SUCCESS,
+      payload: jobRes.data,
     });
   } catch (e) {
     console.error(e);
   }
 }
 
-function* postJobSaga({ payload }) {
-  try {
-    const res = yield axios.post(`${SERVER_URL}/api/jobs`, payload);
-
-    console.log(res);
-    if (!res.data) return;
-
-    // yield put({
-    //   type: UPLOAD_IMAGE_SUCCESS,
-    //   payload: res.data.url,
-    // });
-  } catch (e) {
-    console.error(e);
-  }
-}
-
 export function* jobFormDataSaga() {
-  yield takeLatest(UPLOAD_IMAGE, uploadImageSaga);
   yield takeLatest(POST_JOB, postJobSaga);
 }
 
@@ -143,11 +162,27 @@ const jobFormData = handleActions(
         checked: action.payload,
       },
     }),
-    [UPLOAD_IMAGE_SUCCESS]: (state, action) => ({
+    [POST_JOB_SUCCESS]: (state, action) => ({
       ...state,
+      newJobId: action.payload.id,
       jobData: {
-        ...state.jobData,
-        imgPath: action.payload,
+        img: '',
+        previewURL: '',
+        companyName: '',
+        experienceLevel: 1,
+        introduce: '',
+        task: '',
+        condition: '',
+        preferentialTreatment: '',
+        skills: [],
+        welfare: '',
+        deadline: '',
+        selectedDate: 1,
+        address1: '',
+        address2: '',
+        source: '',
+        other: '',
+        checked: false,
       },
     }),
   },
