@@ -1,13 +1,14 @@
 import { createAction, handleActions } from 'redux-actions';
-import { put, takeLatest, select } from 'redux-saga/effects';
+import { put, takeLatest, select, throttle } from 'redux-saga/effects';
 
 require('dotenv').config();
 
 const axios = require('axios');
 
 const initialState = {
-  newJobId: 0,
+  liked: false,
   jobData: {
+    imgPath: '',
     img: '',
     previewURL: '',
     companyName: '',
@@ -24,7 +25,9 @@ const initialState = {
     address2: '', // 상세 주소
     source: '',
     other: '',
+    likeCnt: '',
     checked: false,
+    comments: [],
   },
   skillSetting: {
     inputVisible: false,
@@ -32,7 +35,7 @@ const initialState = {
   },
 };
 
-const CHANGE_IMAGE = 'job/SHOW_MODAL';
+const CHANGE_IMAGE = 'job/CHANGE_IMAGE';
 const CHANGE_PREVIEW_URL = 'job/CHANGE_PREVIEW_URL';
 const CHANGE_INPUT_VALUE = 'job/CHANGE_INPUT_VALUE';
 const CHANGE_TAG_VISIBLE = 'job/CHANGE_TAG_VISIBLE';
@@ -41,8 +44,18 @@ const CHANGE_TAGS = 'job/CHANGE_TAGS';
 const CHANGE_DATE = 'job/CHANGE_DATE';
 const CHANGE_CHECK = 'job/CHANGE_CHECK';
 
+const GET_LIKED_BOOL_SUCCESS = 'job/GET_LIKED_BOOL_SUCCESS';
 const POST_JOB = 'job/POST_JOB';
 const POST_JOB_SUCCESS = 'job/POST_JOB_SUCCESS';
+const GET_JOB = 'job/GET_JOB';
+const GET_JOB_SUCCESS = 'job/GET_JOB_SUCCESS';
+const PUT_LIKE_JOB = 'job/PUT_LIKE_JOB';
+const PUT_LIKE_JOB_SUCCESS = 'job/PUT_LIKE_JOB_SUCCESS';
+const PUT_UNLIKE_JOB = 'job/PUT_UNLIKE_JOB';
+const PUT_UNLIKE_JOB_SUCCESS = 'job/PUT_UNLIKE_JOB_SUCCESS';
+const PUT_COMMENT = 'job/POST_COMMENT';
+const PUT_COMMENT_SUCCESS = 'job/PUT_COMMENT_SUCCESS';
+const REPLACE_COMMENT = 'job/REPLACE_COMMENT';
 
 // 리덕스 액션 생성자
 export const changeImage = createAction(CHANGE_IMAGE);
@@ -56,6 +69,11 @@ export const changecheck = createAction(CHANGE_CHECK);
 
 // 사가 액션 생성자
 export const postJob = createAction(POST_JOB);
+export const getJob = createAction(GET_JOB);
+export const putLikeJob = createAction(PUT_LIKE_JOB);
+export const putUnlikeJob = createAction(PUT_UNLIKE_JOB);
+export const putComment = createAction(PUT_COMMENT);
+export const replaceComment = createAction(REPLACE_COMMENT);
 
 function* postJobSaga({ payload }) {
   try {
@@ -110,8 +128,96 @@ function* postJobSaga({ payload }) {
   }
 }
 
+function* getJobSaga({ payload }) {
+  try {
+    const jobRes = yield axios.get(`${process.env.REACT_APP_SERVER_URL}/api/jobs/${payload.jobId}`);
+    const userRes = yield axios.get(`${process.env.REACT_APP_SERVER_URL}/api/users/${payload.userToken}`);
+
+    if (!jobRes.data || !userRes.data) return;
+
+    const likedBool = userRes.data.user.userLikes.includes(+payload.jobId);
+
+    yield put({
+      type: GET_JOB_SUCCESS,
+      payload: { job: jobRes.data.job, likedBool },
+    });
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function* putLikeJobSaga({ payload }) {
+  try {
+    const id = yield select(state => state.user.token);
+
+    yield axios.put(`${process.env.REACT_APP_SERVER_URL}/api/users/like`, { id, jobId: payload });
+    const { data } = yield axios.put(`${process.env.REACT_APP_SERVER_URL}/api/jobs/like`, { jobId: payload });
+
+    if (!data) return;
+
+    yield put({
+      type: PUT_LIKE_JOB_SUCCESS,
+      payload: data.num,
+    });
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function* putunlikeJobSaga({ payload }) {
+  try {
+    const id = yield select(state => state.user.token);
+
+    yield axios.put(`${process.env.REACT_APP_SERVER_URL}/api/users/unlike`, { id, jobId: payload });
+    const { data } = yield axios.put(`${process.env.REACT_APP_SERVER_URL}/api/jobs/unlike`, { jobId: payload });
+    console.log(data);
+
+    if (data === '') return;
+
+    yield put({
+      type: PUT_UNLIKE_JOB_SUCCESS,
+      payload: data.num,
+    });
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function* putCommentSaga({ payload }) {
+  const id = yield select(state => state.user.token);
+
+  const commentsRes = yield axios.put(`${process.env.REACT_APP_SERVER_URL}/api/jobs/addComment`, {
+    id,
+    jobId: payload.jobId,
+    comment: payload.comment,
+  });
+
+  yield put({
+    type: PUT_COMMENT_SUCCESS,
+    payload: commentsRes.data.comments,
+  });
+}
+
+function* replaceCommentSaga({ payload }) {
+  const commentsRes = yield axios.put(`${process.env.REACT_APP_SERVER_URL}/api/jobs/replaceComment`, {
+    jobId: payload.jobId,
+    commentId: payload.commentId,
+    newComment: payload.newComment,
+  });
+
+  yield put({
+    type: PUT_COMMENT_SUCCESS,
+    payload: commentsRes.data.comments,
+  });
+}
+
 export function* jobFormDataSaga() {
   yield takeLatest(POST_JOB, postJobSaga);
+  yield takeLatest(GET_JOB, getJobSaga);
+  yield throttle(1000, PUT_LIKE_JOB, putLikeJobSaga);
+  yield throttle(1000, PUT_UNLIKE_JOB, putunlikeJobSaga);
+  yield throttle(1000, PUT_COMMENT, putCommentSaga);
+  yield throttle(1000, REPLACE_COMMENT, replaceCommentSaga);
 }
 
 const jobFormData = handleActions(
@@ -163,10 +269,14 @@ const jobFormData = handleActions(
         checked: action.payload,
       },
     }),
-    [POST_JOB_SUCCESS]: (state, action) => ({
+    [GET_LIKED_BOOL_SUCCESS]: (state, action) => ({
       ...state,
-      newJobId: action.payload.id,
+      liked: action.payload,
+    }),
+    [POST_JOB_SUCCESS]: state => ({
+      ...state,
       jobData: {
+        ...state.jobData,
         img: '',
         previewURL: '',
         companyName: '',
@@ -184,6 +294,53 @@ const jobFormData = handleActions(
         source: '',
         other: '',
         checked: false,
+      },
+    }),
+    [GET_JOB_SUCCESS]: (state, { payload }) => ({
+      ...state,
+      liked: payload.likedBool,
+      jobData: {
+        ...state.jobData,
+        imgPath: payload.job.imgPath,
+        companyName: payload.job.companyName,
+        experienceLevel: payload.job.experienceLevel,
+        introduce: payload.job.introduce,
+        task: payload.job.task,
+        condition: payload.job.condition,
+        preferentialTreatment: payload.job.preferentialTreatment,
+        skills: payload.job.skills,
+        welfare: payload.job.welfare,
+        deadline: payload.job.deadline,
+        selectedDate: payload.job.selectedDate,
+        address1: payload.job.address1,
+        address2: payload.job.address2,
+        source: payload.job.source,
+        other: payload.job.other,
+        likeCnt: payload.job.cntLike,
+        comments: payload.job.comments.reverse(),
+      },
+    }),
+    [PUT_LIKE_JOB_SUCCESS]: (state, { payload }) => ({
+      ...state,
+      liked: !state.liked,
+      jobData: {
+        ...state.jobData,
+        likeCnt: payload,
+      },
+    }),
+    [PUT_UNLIKE_JOB_SUCCESS]: (state, { payload }) => ({
+      ...state,
+      liked: !state.liked,
+      jobData: {
+        ...state.jobData,
+        likeCnt: payload,
+      },
+    }),
+    [PUT_COMMENT_SUCCESS]: (state, { payload }) => ({
+      ...state,
+      jobData: {
+        ...state.jobData,
+        comments: payload.reverse(),
       },
     }),
   },

@@ -8,7 +8,6 @@ import { changeImage, changePreviewURL, changeInputValue, changeDate, changechec
 const JobFormDataContainer = ({ history }) => {
   const userToken = useSelector(state => state.user.token);
   const imageInput = useRef();
-  const newJobId = useSelector(state => state.jobFormData.newJobId);
   const imageFile = useSelector(state => state.jobFormData.jobData.img);
   const previewURL = useSelector(state => state.jobFormData.jobData.previewURL);
   const companyName = useSelector(state => state.jobFormData.jobData.companyName);
@@ -81,23 +80,90 @@ const JobFormDataContainer = ({ history }) => {
       return;
     }
 
-    if (
-      !imageFile ||
-      !companyName.trim() ||
-      !introduce.trim() ||
-      !task.trim() ||
-      !condition.trim() ||
-      !preferentialTreatment.trim() ||
-      !skills.length ||
-      !welfare.trim() ||
-      (selectedDate === 2 && !deadline) ||
-      !address1.trim() ||
-      !source.trim() ||
-      !checked
-    ) {
+    if (!companyName.trim()) {
       Modal.error({
         title: '양식 오류',
-        content: '(선택)을 제외한 양식은 작성해야됩니다.',
+        content: '회사명을 입력해주세요.',
+      });
+      return;
+    }
+
+    if (!introduce.trim()) {
+      Modal.error({
+        title: '양식 오류',
+        content: '회사 소개를 입력해주세요.',
+      });
+      return;
+    }
+
+    if (!task.trim()) {
+      Modal.error({
+        title: '양식 오류',
+        content: '담당 업무를 입력해주세요.',
+      });
+      return;
+    }
+
+    if (!condition.trim()) {
+      Modal.error({
+        title: '양식 오류',
+        content: '자격 요건을 입력해주세요.',
+      });
+      return;
+    }
+
+    if (!preferentialTreatment.trim()) {
+      Modal.error({
+        title: '양식 오류',
+        content: '우대 사항을 입력해주세요.',
+      });
+      return;
+    }
+
+    if (!skills.length) {
+      Modal.error({
+        title: '양식 오류',
+        content: '기술 스택을 입력해주세요.',
+      });
+      return;
+    }
+
+    if (!welfare.trim()) {
+      Modal.error({
+        title: '양식 오류',
+        content: '회사 복지를 입력해주세요.',
+      });
+      return;
+    }
+
+    if (selectedDate === 2 && !deadline) {
+      Modal.error({
+        title: '양식 오류',
+        content: '마감일을 선택해주세요.',
+      });
+      return;
+    }
+
+    if (!address1.trim()) {
+      Modal.error({
+        title: '양식 오류',
+        content: '도로명을 입력해주세요.',
+      });
+      return;
+    }
+
+    if (!source.trim()) {
+      Modal.error({
+        title: '양식 오류',
+        content: '공고 출처를 입력해주세요.',
+      });
+      return;
+    }
+
+    if (!checked) {
+      Modal.error({
+        title: '양식 오류',
+        content: '공지를 확인하고 체크해주세요.',
       });
       return;
     }
@@ -106,8 +172,7 @@ const JobFormDataContainer = ({ history }) => {
     formData.append('img', imageFile);
     dispatch(postJob(formData));
 
-    console.log('작동');
-    history.push(`/job/${newJobId}`);
+    history.push(`/`);
   };
 
   return (

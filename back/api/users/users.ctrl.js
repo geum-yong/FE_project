@@ -43,15 +43,15 @@ exports.write = async (req, res) => {
 
 // 관심 등록
 exports.like = async (req, res) => {
-  const { email, jobId } = req.body;
+  const { id, jobId } = req.body;
 
-  if (!email || !jobId) return res.status(404).send({ message: 'like fail', error: 'null of request' });
+  if (!id || !jobId) return res.status(404).send();
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ id });
 
-    if (!user) return res.status(404).send({ message: 'like fail', error: 'null of user' });
-    if (user.userLikes.includes(jobId)) return res.status(404).send({ message: 'like fail', error: 'overlap of jobId' });
+    if (!user) return res.status(404).send();
+    if (user.userLikes.includes(jobId)) return res.status(404).send();
 
     user.userLikes.push(jobId);
     user.save();
@@ -59,21 +59,21 @@ exports.like = async (req, res) => {
     res.send({ message: 'like success', likes: user.userLikes });
   } catch (e) {
     console.error(e);
-    res.status(500).send({ message: 'like fail', error: e });
+    res.status(500).send();
   }
 };
 
 // 관심 등록 취소
 exports.unlike = async (req, res) => {
-  const { email, jobId } = req.body;
+  const { id, jobId } = req.body;
 
-  if (!email || !jobId) return res.status(404).send({ message: 'unlike fail', error: 'null of request' });
+  if (!id || !jobId) return res.status(404).send();
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ id });
 
-    if (!user) return res.status(404).send({ message: 'unlike fail', error: 'null of user' });
-    if (!user.userLikes.includes(jobId)) return res.status(404).send({ message: 'unlike fail', error: 'null of jobId' });
+    if (!user) return res.status(404).send();
+    if (!user.userLikes.includes(jobId)) return res.status(404).send();
 
     user.userLikes.splice(user.userLikes.indexOf(jobId), 1);
     user.save();
@@ -81,6 +81,6 @@ exports.unlike = async (req, res) => {
     res.send({ message: 'unlike success', likes: user.userLikes });
   } catch (e) {
     console.error(e);
-    res.status(500).send({ message: 'unlike fail', error: e });
+    res.status(500).send();
   }
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Empty } from 'antd';
 import JobCardContainer from '../../../containers/home/jobList/JobCardContainer';
 
 const JobSection = styled.section`
@@ -20,6 +20,10 @@ const JobSection = styled.section`
   }
 `;
 
+const EmptyBox = styled(Empty)`
+  grid-column-start: 2;
+`;
+
 const MoreBtn = styled(Button)`
   margin: 50px auto 0;
   width: 200px;
@@ -30,7 +34,11 @@ const JobList = ({ jobs, totalJobsCnt, isModalVisible, handleOk, handleCancel, o
     <>
       <JobSection>
         <h2 className='a11y-hidden'>job 리스트</h2>
-        {jobs.length === 0 ? <p>조회 결과가 없습니다.</p> : jobs.map(job => <JobCardContainer key={job.id} job={job} />)}
+        {jobs.length === 0 ? (
+          <EmptyBox description={<span>검색 결과가 없습니다.</span>} />
+        ) : (
+          jobs.map(job => <JobCardContainer key={job.id} job={job} />)
+        )}
       </JobSection>
       {jobs.length < totalJobsCnt && (
         <MoreBtn type='primary' size={'large'} onClick={onClickMoreBtn}>

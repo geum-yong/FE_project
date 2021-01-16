@@ -251,15 +251,7 @@ const JobFormData = ({
         <p className='title'>
           📎<label htmlFor='source'>공고 출처</label>
         </p>
-        <Input
-          id='source'
-          name='source'
-          placeholder='ex) https://www.naver.com/'
-          maxLength='10'
-          size='large'
-          onChange={onChangeInputValue}
-          allowClear
-        />
+        <Input id='source' name='source' placeholder='ex) https://www.naver.com/' size='large' onChange={onChangeInputValue} allowClear />
       </div>
 
       {/* 기타 추가 정보 */}

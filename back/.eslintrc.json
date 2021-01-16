@@ -15,6 +15,7 @@
     "no-console": "off",
     "linebreak-style": "off",
     "consistent-return": "off",
+    "no-plusplus": "off",
     "prettier/prettier": [
       "error",
       {

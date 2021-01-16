@@ -1,10 +1,16 @@
 import React from 'react';
+import AppContainer from '../containers/common/AppContainer';
+import HeaderContainer from '../containers/common/HeaderContainer';
+import JobPostingContainer from '../containers/job/JobPostingContainer';
+import Footer from '../components/common/Footer';
 
 const Job = () => {
   return (
-    <div>
-      <h1>공고 상세 화면입니다.</h1>
-    </div>
+    <AppContainer>
+      <HeaderContainer />
+      <JobPostingContainer />
+      <Footer />
+    </AppContainer>
   );
 };
 

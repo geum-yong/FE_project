@@ -8,8 +8,6 @@ const axios = require('axios');
 const initialState = {
   login: false,
   token: '',
-  email: '',
-  likes: [], // 관심회사 Id 집합
 };
 
 const LOGIN_ASYNC = 'user/LOGIN_ASYNC';
@@ -69,14 +67,10 @@ const user = handleActions(
     [LOGIN_SUCCESS]: (state, action) => ({
       login: true,
       token: action.payload.id,
-      email: action.payload.email,
-      likes: action.payload.userLikes,
     }),
     [LOGOUT]: () => ({
       login: false,
       token: '',
-      email: '',
-      likes: [],
     }),
   },
   initialState
