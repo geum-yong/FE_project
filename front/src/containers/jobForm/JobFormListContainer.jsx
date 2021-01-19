@@ -170,9 +170,12 @@ const JobFormDataContainer = ({ history }) => {
 
     const formData = new FormData();
     formData.append('img', imageFile);
-    dispatch(postJob(formData));
+    const test = dispatch(postJob(formData));
+    console.log(test);
 
-    history.push(`/`);
+    setTimeout(() => {
+      history.push(`/`);
+    }, 500);
   };
 
   return (

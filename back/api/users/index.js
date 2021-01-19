@@ -1,11 +1,11 @@
 const express = require('express');
-const jobsCtrl = require('./users.ctrl');
+const usersCtrl = require('./users.ctrl');
 
 const router = express.Router();
 
-router.get('/:id', jobsCtrl.find);
-router.post('/', jobsCtrl.write);
-router.put('/like', jobsCtrl.like);
-router.put('/unlike', jobsCtrl.unlike);
+router.get('/:id', usersCtrl.find);
+router.post('/', usersCtrl.write);
+router.put('/like', usersCtrl.like);
+router.put('/unlike', usersCtrl.unlike);
 
 module.exports = router;

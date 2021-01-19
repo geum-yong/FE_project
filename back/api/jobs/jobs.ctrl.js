@@ -359,5 +359,8 @@ exports.replaceComment = async (req, res) => {
 
 // 이미지 업로드
 exports.upload = async (req, res) => {
+  if (!req.file) {
+    return res.json({ url: '' });
+  }
   res.json({ url: `${req.file.filename}` });
 };
