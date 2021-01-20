@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { GoogleLogout } from 'react-google-login';
 import styled from 'styled-components';
 import { Menu, Dropdown, Button } from 'antd';
-import { HeartTwoTone, LoginOutlined, MenuOutlined, LogoutOutlined } from '@ant-design/icons';
+import { HeartTwoTone, LoginOutlined, MenuOutlined, LogoutOutlined, SmileTwoTone } from '@ant-design/icons';
 
 dotenv.config();
 
@@ -44,15 +44,22 @@ const Wrapper = styled.header`
   }
 `;
 
-const Header = ({ path, loginState, onMoveToLogin, onLogoutSucess }) => {
+const Header = ({ path, loginState, mode, onMoveToLogin, onLogoutSucess, onClickLikeBtn, onClickAllBtn }) => {
   const menu = (
     <Menu>
       {loginState && (
         <>
-          {loginState && path === '/' && (
+          {mode !== 'like' && loginState && path === '/' && (
             <Menu.Item key='0'>
-              <Button icon={<HeartTwoTone twoToneColor='#eb2f96' />} onClick={onMoveToLogin}>
-                관심회사
+              <Button icon={<HeartTwoTone twoToneColor='#eb2f96' />} onClick={onClickLikeBtn}>
+                관심공고
+              </Button>
+            </Menu.Item>
+          )}
+          {mode === 'like' && loginState && path === '/' && (
+            <Menu.Item key='0'>
+              <Button icon={<SmileTwoTone />} onClick={onClickAllBtn}>
+                전체공고
               </Button>
             </Menu.Item>
           )}
@@ -91,7 +98,16 @@ const Header = ({ path, loginState, onMoveToLogin, onLogoutSucess }) => {
           <MenuOutlined />
         </a>
       </Dropdown>
-      {loginState && path === '/' && <Button icon={<HeartTwoTone twoToneColor='#eb2f96' />}>관심회사</Button>}
+      {mode !== 'like' && loginState && path === '/' && (
+        <Button icon={<HeartTwoTone twoToneColor='#eb2f96' />} onClick={onClickLikeBtn}>
+          관심공고
+        </Button>
+      )}
+      {mode === 'like' && loginState && path === '/' && (
+        <Button icon={<SmileTwoTone />} onClick={onClickAllBtn}>
+          전체공고
+        </Button>
+      )}
       {loginState ? (
         <GoogleLogout
           clientId={process.env.REACT_APP_GOOGLE_ID}

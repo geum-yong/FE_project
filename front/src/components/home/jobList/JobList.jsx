@@ -21,7 +21,11 @@ const JobSection = styled.section`
 `;
 
 const EmptyBox = styled(Empty)`
-  grid-column-start: 2;
+  grid-column-start: 1;
+
+  @media (min-width: 992px) {
+    grid-column-start: 2;
+  }
 `;
 
 const MoreBtn = styled(Button)`
@@ -34,11 +38,7 @@ const JobList = ({ jobs, totalJobsCnt, isModalVisible, handleOk, handleCancel, o
     <>
       <JobSection>
         <h2 className='a11y-hidden'>job 리스트</h2>
-        {jobs.length === 0 ? (
-          <EmptyBox description={<span>검색 결과가 없습니다.</span>} />
-        ) : (
-          jobs.map(job => <JobCardContainer key={job.id} job={job} />)
-        )}
+        {jobs.length === 0 ? <EmptyBox description={<span>결과가 없습니다.</span>} /> : jobs.map(job => <JobCardContainer key={job.id} job={job} />)}
       </JobSection>
       {jobs.length < totalJobsCnt && (
         <MoreBtn type='primary' size={'large'} onClick={onClickMoreBtn}>

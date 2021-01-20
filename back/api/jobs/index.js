@@ -20,6 +20,7 @@ const upload = multer({
 
 router.get('/', jobsCtrl.list);
 router.get('/find/:companyName', jobsCtrl.search);
+router.get('/like/:id', jobsCtrl.likeList);
 router.get('/tags', jobsCtrl.getTags);
 router.get('/tags/:tagString', jobsCtrl.listByTags);
 router.get('/:id', jobsCtrl.find);

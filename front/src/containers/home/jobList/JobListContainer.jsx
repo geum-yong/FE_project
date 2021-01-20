@@ -2,7 +2,16 @@ import React, { memo, useCallback, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import JobList from '../../../components/home/jobList/JobList';
-import { closeModal, getJobListAsync, getJobMoreAsync, upRollingCount } from '../../../modules/jobs';
+import {
+  closeModal,
+  getJobLikeListAsync,
+  getJobListAsync,
+  getJobMoreAsync,
+  upRollingCount,
+  changeMode,
+  getJobFindAsync,
+  getJobTagsAsync,
+} from '../../../modules/jobs';
 
 const JobListContainer = ({ history }) => {
   const rollingCnt = useSelector(state => state.jobs.rollingCnt);
@@ -13,8 +22,23 @@ const JobListContainer = ({ history }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (mode === 'all' && rollingCnt === 0) {
+    if (mode === 'all') {
+      changeMode('all');
       dispatch(getJobListAsync());
+    }
+
+    if (mode === 'find') {
+      changeMode('find');
+      dispatch(getJobFindAsync());
+    }
+
+    if (mode === 'tag') {
+      changeMode('tag');
+      dispatch(getJobTagsAsync());
+    }
+
+    if (mode === 'like') {
+      dispatch(getJobLikeListAsync());
     }
   }, [dispatch, mode, rollingCnt]);
 

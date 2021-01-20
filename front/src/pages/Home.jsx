@@ -12,6 +12,7 @@ import { checkUserAsync } from '../modules/user';
 
 const Home = () => {
   const loginState = useSelector(state => state.user.login);
+  const mode = useSelector(state => state.jobs.mode);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -24,8 +25,8 @@ const Home = () => {
     <AppContainer>
       <HeaderContainer />
       <Introduce />
-      <FindInputContainer />
-      <TagListContainer />
+      {mode !== 'like' && <FindInputContainer />}
+      {mode !== 'like' && <TagListContainer />}
       <JobListContainer />
       <PostJobBtnContainer />
       <Footer />

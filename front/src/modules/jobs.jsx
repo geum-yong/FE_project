@@ -63,6 +63,7 @@ const GET_JOB_TAGS_ASYNC = 'job/GET_JOB_TAGS_ASYNC';
 const GET_JOB_MORE_ASYNC = 'job/GET_JOB_MORE_ASYNC';
 const GET_JOB_MORE_ASYNC_SUCCESS = 'job/GET_JOB_MORE_ASYNC_SUCCESS';
 const DELETE_JOB = 'job/DELETE_JOB';
+const GET_JOB_LIKE_LIST_ASYNC = 'job/GET_JOB_LIKE_LIST_ASYNC';
 
 // 리덕스 액션 생성자
 export const showModal = createAction(SHOW_MODAL);
@@ -81,6 +82,7 @@ export const getJobFindAsync = createAction(GET_JOB_FIND_ASYNC);
 export const getJobTagsAsync = createAction(GET_JOB_TAGS_ASYNC);
 export const getJobMoreAsync = createAction(GET_JOB_MORE_ASYNC);
 export const deleteJobAsync = createAction(DELETE_JOB);
+export const getJobLikeListAsync = createAction(GET_JOB_LIKE_LIST_ASYNC);
 
 function* getTagsSaga() {
   try {
@@ -179,6 +181,20 @@ function* deleteJobSaga({ payload }) {
   }
 }
 
+function* getLikeJobSaga() {
+  try {
+    const userToken = yield select(state => state.user.token);
+    const res = yield axios.get(`${process.env.REACT_APP_SERVER_URL}/api/jobs/like/${userToken}`);
+
+    yield put({
+      type: GET_JOB_LIST_ASYNC_SUCCESS,
+      payload: { jobs: res.data.jobs, jobsCnt: 0 },
+    });
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export function* jobsSaga() {
   yield takeLatest(GET_TAG_LIST_ASYNC, getTagsSaga);
   yield takeLatest(GET_JOB_LIST_ASYNC, getListSaga);
@@ -186,6 +202,7 @@ export function* jobsSaga() {
   yield takeLatest(GET_JOB_TAGS_ASYNC, getListTagsSaga);
   yield takeLatest(GET_JOB_MORE_ASYNC, getListMoreSaga);
   yield throttle(1000, DELETE_JOB, deleteJobSaga);
+  yield takeLatest(GET_JOB_LIKE_LIST_ASYNC, getLikeJobSaga);
 }
 
 const job = handleActions(

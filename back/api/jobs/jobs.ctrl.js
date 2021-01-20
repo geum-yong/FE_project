@@ -365,3 +365,22 @@ exports.upload = async (req, res) => {
   }
   res.json({ url: `${req.file.filename}` });
 };
+
+exports.likeList = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) return res.status(404).send();
+
+  try {
+    const { userLikes } = await User.findOne({ id });
+
+    const likeJobs = await Promise.all(userLikes.map(jobId => Job.findOne({ id: jobId })));
+
+    const jobs = likeJobs.filter(job => job.deletedDate === null);
+
+    res.send({ message: 'list success', jobs });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send();
+  }
+};

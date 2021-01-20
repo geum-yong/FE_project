@@ -21,7 +21,7 @@ const TagListContainer = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (mode === 'all' && rollingCnt === 0) {
+    if (mode === 'all') {
       dispatch(getTagListAsync());
     }
   }, [dispatch, mode, rollingCnt]);
