@@ -1,5 +1,5 @@
 import { createAction, handleActions } from 'redux-actions';
-import { put, select, takeLatest } from 'redux-saga/effects';
+import { debounce, put, select, takeLatest, throttle } from 'redux-saga/effects';
 
 require('dotenv').config();
 
@@ -62,6 +62,7 @@ const GET_JOB_FIND_ASYNC = 'job/GET_JOB_FIND_ASYNC';
 const GET_JOB_TAGS_ASYNC = 'job/GET_JOB_TAGS_ASYNC';
 const GET_JOB_MORE_ASYNC = 'job/GET_JOB_MORE_ASYNC';
 const GET_JOB_MORE_ASYNC_SUCCESS = 'job/GET_JOB_MORE_ASYNC_SUCCESS';
+const DELETE_JOB = 'job/DELETE_JOB';
 
 // 리덕스 액션 생성자
 export const showModal = createAction(SHOW_MODAL);
@@ -79,6 +80,7 @@ export const getJobListAsync = createAction(GET_JOB_LIST_ASYNC);
 export const getJobFindAsync = createAction(GET_JOB_FIND_ASYNC);
 export const getJobTagsAsync = createAction(GET_JOB_TAGS_ASYNC);
 export const getJobMoreAsync = createAction(GET_JOB_MORE_ASYNC);
+export const deleteJobAsync = createAction(DELETE_JOB);
 
 function* getTagsSaga() {
   try {
@@ -169,12 +171,21 @@ function* getListMoreSaga() {
   }
 }
 
+function* deleteJobSaga({ payload }) {
+  try {
+    yield axios.delete(`${process.env.REACT_APP_SERVER_URL}/api/jobs/${payload}`);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export function* jobsSaga() {
   yield takeLatest(GET_TAG_LIST_ASYNC, getTagsSaga);
   yield takeLatest(GET_JOB_LIST_ASYNC, getListSaga);
-  yield takeLatest(GET_JOB_FIND_ASYNC, getFindJobSaga);
+  yield debounce(500, GET_JOB_FIND_ASYNC, getFindJobSaga);
   yield takeLatest(GET_JOB_TAGS_ASYNC, getListTagsSaga);
   yield takeLatest(GET_JOB_MORE_ASYNC, getListMoreSaga);
+  yield throttle(1000, DELETE_JOB, deleteJobSaga);
 }
 
 const job = handleActions(

@@ -49,11 +49,14 @@ const Header = ({ path, loginState, onMoveToLogin, onLogoutSucess }) => {
     <Menu>
       {loginState && (
         <>
-          <Menu.Item key='0'>
-            <Button icon={<HeartTwoTone twoToneColor='#eb2f96' />} onClick={onMoveToLogin}>
-              관심회사
-            </Button>
-          </Menu.Item>
+          {loginState && path === '/' && (
+            <Menu.Item key='0'>
+              <Button icon={<HeartTwoTone twoToneColor='#eb2f96' />} onClick={onMoveToLogin}>
+                관심회사
+              </Button>
+            </Menu.Item>
+          )}
+
           <Menu.Item key='1'>
             <GoogleLogout
               clientId={process.env.REACT_APP_GOOGLE_ID}

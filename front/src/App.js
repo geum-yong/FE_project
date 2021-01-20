@@ -14,7 +14,7 @@ function App() {
       <Switch>
         <Route path='/' component={Home} exact />
         <Route path='/job/:id' component={Job} exact />
-        <Route path='/jobForm' component={JobForm} />
+        <Route path={['/jobForm/:id', '/jobForm']} component={JobForm} />
         <Route path='/login' component={Login} />
         <Route component={NotFound} />
       </Switch>

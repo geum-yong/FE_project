@@ -164,9 +164,10 @@ exports.write = async (req, res) => {
 // 공고 수정
 exports.replace = async (req, res) => {
   const {
+    userToken,
     imgPath,
     companyName,
-    exprerienceLevel,
+    experienceLevel,
     introduce,
     task,
     condition,
@@ -181,9 +182,10 @@ exports.replace = async (req, res) => {
   } = req.body;
 
   if (
+    !userToken ||
     !imgPath ||
     !companyName ||
-    !exprerienceLevel ||
+    !experienceLevel ||
     !introduce ||
     !task ||
     !condition ||
@@ -192,7 +194,6 @@ exports.replace = async (req, res) => {
     !welfare ||
     !deadline ||
     !address1 ||
-    !address2 ||
     !source
   )
     return res.status(404).send();
@@ -205,7 +206,7 @@ exports.replace = async (req, res) => {
       {
         imgPath,
         companyName,
-        exprerienceLevel,
+        experienceLevel,
         introduce,
         task,
         condition,

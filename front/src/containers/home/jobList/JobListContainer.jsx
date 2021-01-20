@@ -5,6 +5,7 @@ import JobList from '../../../components/home/jobList/JobList';
 import { closeModal, getJobListAsync, getJobMoreAsync, upRollingCount } from '../../../modules/jobs';
 
 const JobListContainer = ({ history }) => {
+  const rollingCnt = useSelector(state => state.jobs.rollingCnt);
   const jobs = useSelector(state => state.jobs.jobs);
   const mode = useSelector(state => state.jobs.mode);
   const totalJobsCnt = useSelector(state => state.jobs.totalJobCnt);
@@ -12,10 +13,10 @@ const JobListContainer = ({ history }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (mode === 'all') {
+    if (mode === 'all' && rollingCnt === 0) {
       dispatch(getJobListAsync());
     }
-  }, [dispatch, mode]);
+  }, [dispatch, mode, rollingCnt]);
 
   const handleOk = useCallback(() => {
     dispatch(closeModal());

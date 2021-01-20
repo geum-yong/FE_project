@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { createAction, handleActions } from 'redux-actions';
 import { put, takeLatest, select, throttle } from 'redux-saga/effects';
 
@@ -6,8 +7,10 @@ require('dotenv').config();
 const axios = require('axios');
 
 const initialState = {
+  modifyMode: false,
   liked: false,
   jobData: {
+    userToken: '',
     imgPath: '',
     img: '',
     previewURL: '',
@@ -19,7 +22,7 @@ const initialState = {
     preferentialTreatment: '', // 우대사항
     skills: [], // 기술스택 ["react", "vue"]
     welfare: '',
-    deadline: '',
+    deadline: moment(new Date(), 'YYYY-MM-DD'),
     selectedDate: 1, // 기한이 있는지 혹은 상시인지 구분 (1 상시 / 2 기한)
     address1: '', // 도로명 주소
     address2: '', // 상세 주소
@@ -43,12 +46,14 @@ const CHANGE_TAG_INPUT_VALUE = 'job/CHANGE_TAG_INPUT_VALUE';
 const CHANGE_TAGS = 'job/CHANGE_TAGS';
 const CHANGE_DATE = 'job/CHANGE_DATE';
 const CHANGE_CHECK = 'job/CHANGE_CHECK';
+const CHANGE_MODIFY_MODE = 'job/CHANGE_MODIFY_MODE';
+const SET_JOBDATA = 'job/SET_JOBDATA';
 
 const GET_LIKED_BOOL_SUCCESS = 'job/GET_LIKED_BOOL_SUCCESS';
 const POST_JOB = 'job/POST_JOB';
-const POST_JOB_SUCCESS = 'job/POST_JOB_SUCCESS';
 const GET_JOB = 'job/GET_JOB';
 const GET_JOB_SUCCESS = 'job/GET_JOB_SUCCESS';
+const GET_JOB_MODIFY_MODE_SUCCESS = 'job/GET_JOB_MODIFY_MODE_SUCCESS';
 const PUT_LIKE_JOB = 'job/PUT_LIKE_JOB';
 const PUT_LIKE_JOB_SUCCESS = 'job/PUT_LIKE_JOB_SUCCESS';
 const PUT_UNLIKE_JOB = 'job/PUT_UNLIKE_JOB';
@@ -65,7 +70,9 @@ export const changeTagVisible = createAction(CHANGE_TAG_VISIBLE);
 export const changeTagInputValue = createAction(CHANGE_TAG_INPUT_VALUE);
 export const changeTags = createAction(CHANGE_TAGS);
 export const changeDate = createAction(CHANGE_DATE);
-export const changecheck = createAction(CHANGE_CHECK);
+export const changeCheck = createAction(CHANGE_CHECK);
+export const changeModifyMode = createAction(CHANGE_MODIFY_MODE);
+export const setJobData = createAction(SET_JOBDATA);
 
 // 사가 액션 생성자
 export const postJob = createAction(POST_JOB);
@@ -77,11 +84,17 @@ export const replaceComment = createAction(REPLACE_COMMENT);
 
 function* postJobSaga({ payload }) {
   try {
-    const imgUrlRes = yield axios.post(`${process.env.REACT_APP_SERVER_URL}/api/jobs/upload`, payload);
+    let imgUrlRes = '';
 
-    if (!imgUrlRes.data) return;
+    if (payload.formData) {
+      imgUrlRes = yield axios.post(`${process.env.REACT_APP_SERVER_URL}/api/jobs/upload`, payload.formData);
+
+      if (!imgUrlRes.data) return;
+    }
 
     const userToken = yield select(state => state.user.token);
+    const modifyMode = yield select(state => state.jobFormData.modifyMode);
+    const imgPath = yield select(state => state.jobFormData.jobData.imgPath);
     const companyName = yield select(state => state.jobFormData.jobData.companyName);
     const experienceLevel = yield select(state => state.jobFormData.jobData.experienceLevel);
     const introduce = yield select(state => state.jobFormData.jobData.introduce);
@@ -99,9 +112,17 @@ function* postJobSaga({ payload }) {
 
     const newJobDeadline = selectedDate === 1 ? '상시' : deadline;
 
+    const imgPathValue = () => {
+      if (!modifyMode) {
+        return imgUrlRes ? imgUrlRes.data.url : '';
+      }
+
+      return imgUrlRes ? imgUrlRes.data.url : imgPath;
+    };
+
     const newJob = {
       userToken,
-      imgPath: imgUrlRes.data.url,
+      imgPath: imgPathValue(),
       companyName,
       experienceLevel,
       introduce,
@@ -117,12 +138,11 @@ function* postJobSaga({ payload }) {
       other,
     };
 
-    const jobRes = yield axios.post(`${process.env.REACT_APP_SERVER_URL}/api/jobs`, newJob);
-
-    yield put({
-      type: POST_JOB_SUCCESS,
-      payload: jobRes.data,
-    });
+    if (!modifyMode) {
+      yield axios.post(`${process.env.REACT_APP_SERVER_URL}/api/jobs`, newJob);
+    } else {
+      yield axios.put(`${process.env.REACT_APP_SERVER_URL}/api/jobs/${payload.jobId.id}`, newJob);
+    }
   } catch (e) {
     console.error(e);
   }
@@ -130,17 +150,26 @@ function* postJobSaga({ payload }) {
 
 function* getJobSaga({ payload }) {
   try {
+    const modifyMode = yield select(state => state.jobFormData.modifyMode);
+
     const jobRes = yield axios.get(`${process.env.REACT_APP_SERVER_URL}/api/jobs/${payload.jobId}`);
     const userRes = yield axios.get(`${process.env.REACT_APP_SERVER_URL}/api/users/${payload.userToken}`);
 
     if (!jobRes.data || !userRes.data) return;
 
-    const likedBool = userRes.data.user.userLikes.includes(+payload.jobId);
+    if (!modifyMode) {
+      const likedBool = userRes.data.user.userLikes.includes(+payload.jobId);
 
-    yield put({
-      type: GET_JOB_SUCCESS,
-      payload: { job: jobRes.data.job, likedBool },
-    });
+      yield put({
+        type: GET_JOB_SUCCESS,
+        payload: { job: jobRes.data.job, likedBool },
+      });
+    } else {
+      yield put({
+        type: GET_JOB_MODIFY_MODE_SUCCESS,
+        payload: { job: jobRes.data.job },
+      });
+    }
   } catch (e) {
     console.error(e);
   }
@@ -273,34 +302,12 @@ const jobFormData = handleActions(
       ...state,
       liked: action.payload,
     }),
-    [POST_JOB_SUCCESS]: state => ({
-      ...state,
-      jobData: {
-        ...state.jobData,
-        img: '',
-        previewURL: '',
-        companyName: '',
-        experienceLevel: 1,
-        introduce: '',
-        task: '',
-        condition: '',
-        preferentialTreatment: '',
-        skills: [],
-        welfare: '',
-        deadline: '',
-        selectedDate: 1,
-        address1: '',
-        address2: '',
-        source: '',
-        other: '',
-        checked: false,
-      },
-    }),
     [GET_JOB_SUCCESS]: (state, { payload }) => ({
       ...state,
       liked: payload.likedBool,
       jobData: {
         ...state.jobData,
+        userToken: payload.job.userToken,
         imgPath: payload.job.imgPath,
         companyName: payload.job.companyName,
         experienceLevel: payload.job.experienceLevel,
@@ -311,7 +318,30 @@ const jobFormData = handleActions(
         skills: payload.job.skills,
         welfare: payload.job.welfare,
         deadline: payload.job.deadline,
-        selectedDate: payload.job.selectedDate,
+        address1: payload.job.address1,
+        address2: payload.job.address2,
+        source: payload.job.source,
+        other: payload.job.other,
+        likeCnt: payload.job.cntLike,
+        comments: payload.job.comments.reverse(),
+      },
+    }),
+    [GET_JOB_MODIFY_MODE_SUCCESS]: (state, { payload }) => ({
+      ...state,
+      jobData: {
+        ...state.jobData,
+        userToken: payload.job.userToken,
+        imgPath: payload.job.imgPath,
+        companyName: payload.job.companyName,
+        experienceLevel: payload.job.experienceLevel,
+        introduce: payload.job.introduce,
+        task: payload.job.task,
+        condition: payload.job.condition,
+        preferentialTreatment: payload.job.preferentialTreatment,
+        skills: payload.job.skills,
+        welfare: payload.job.welfare,
+        deadline: payload.job.deadline === '상시' ? '' : payload.job.deadline,
+        selectedDate: payload.job.deadline === '상시' ? 1 : 2,
         address1: payload.job.address1,
         address2: payload.job.address2,
         source: payload.job.source,
@@ -341,6 +371,41 @@ const jobFormData = handleActions(
       jobData: {
         ...state.jobData,
         comments: payload.reverse(),
+      },
+    }),
+    [CHANGE_MODIFY_MODE]: (state, { payload }) => ({
+      ...state,
+      modifyMode: payload,
+    }),
+    [SET_JOBDATA]: () => ({
+      modifyMode: false,
+      liked: false,
+      jobData: {
+        userToken: '',
+        imgPath: '',
+        img: '',
+        previewURL: '',
+        companyName: '',
+        experienceLevel: 1,
+        introduce: '',
+        task: '',
+        condition: '',
+        preferentialTreatment: '',
+        skills: [],
+        welfare: '',
+        deadline: moment(new Date(), 'YYYY-MM-DD'),
+        selectedDate: 1,
+        address1: '',
+        address2: '',
+        source: '',
+        other: '',
+        likeCnt: '',
+        checked: false,
+        comments: [],
+      },
+      skillSetting: {
+        inputVisible: false,
+        inputValue: '',
       },
     }),
   },

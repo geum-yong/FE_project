@@ -1,10 +1,20 @@
 import React, { memo, useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import emailjs from 'emailjs-com';
 import { withRouter } from 'react-router-dom';
 import JobPosting from '../../components/job/JobPosting';
-import { getJob, putComment, putLikeJob, putUnlikeJob } from '../../modules/jobFormData';
+import { getJob, putComment, putLikeJob, putUnlikeJob, setJobData } from '../../modules/jobFormData';
+import { changeDeclarationJobVisible, changeDeleteVisible } from '../../modules/jobModal';
+import { changeMode, deleteJobAsync } from '../../modules/jobs';
 
-const JobPostingContainer = ({ match }) => {
+require('dotenv').config();
+
+const JobPostingContainer = ({ match, history }) => {
+  const deleteVisible = useSelector(state => state.jobModal.deleteVisible);
+  const declarationJobVisible = useSelector(state => state.jobModal.declarationJobVisible);
+
+  const loginToken = useSelector(state => state.user.token);
+  const userToken = useSelector(state => state.jobFormData.jobData.userToken);
   const imgPath = useSelector(state => state.jobFormData.jobData.imgPath);
   const companyName = useSelector(state => state.jobFormData.jobData.companyName);
   const experienceLevel = useSelector(state => state.jobFormData.jobData.experienceLevel);
@@ -29,6 +39,10 @@ const JobPostingContainer = ({ match }) => {
 
   useEffect(() => {
     dispatch(getJob({ jobId: match.params.id, userToken: localStorage.getItem('FESITE_TOKEN') }));
+
+    return () => {
+      dispatch(setJobData());
+    };
   }, [match.params.id, dispatch]);
 
   const onClickLikeBtn = useCallback(() => {
@@ -50,8 +64,64 @@ const JobPostingContainer = ({ match }) => {
     [dispatch, match.params.id]
   );
 
+  const onClickModifyBtn = useCallback(() => {
+    history.push(`/jobForm/${match.params.id}`);
+  }, [history, match.params.id]);
+
+  const onClickDeleteBtn = useCallback(() => {
+    dispatch(changeDeleteVisible(true));
+  }, [dispatch]);
+
+  const deleteProcess = useCallback(() => {
+    dispatch(deleteJobAsync(match.params.id));
+    dispatch(changeMode('all'));
+    dispatch(changeDeleteVisible(false));
+    history.push(`/`);
+  }, [dispatch, history, match.params.id]);
+
+  const cancelDelete = useCallback(() => {
+    dispatch(changeDeleteVisible(false));
+  }, [dispatch]);
+
+  const onClickDeclarationJobBtn = useCallback(() => {
+    dispatch(changeDeclarationJobVisible(true));
+  }, [dispatch]);
+
+  const declarationJobTitle = useRef();
+  const declarationJobId = useRef();
+  const declarationJobDescription = useRef();
+
+  const declarationJobProcess = useCallback(async () => {
+    const data = {
+      title: declarationJobTitle.current.value,
+      id: declarationJobId.current.value,
+      description: declarationJobDescription.current.value,
+      sender: loginToken,
+    };
+
+    await emailjs.send(process.env.REACT_APP_EMAIL_ID, process.env.REACT_APP_TEMPLATE_ID, data, process.env.REACT_APP_USER_ID);
+
+    dispatch(changeDeclarationJobVisible(false));
+  }, [dispatch, loginToken]);
+
+  const cancelDeclarationJob = useCallback(() => {
+    dispatch(changeDeclarationJobVisible(false));
+  }, [dispatch]);
+
   return (
     <JobPosting
+      declarationJobTitle={declarationJobTitle}
+      declarationJobId={declarationJobId}
+      declarationJobDescription={declarationJobDescription}
+      declarationJobProcess={declarationJobProcess}
+      cancelDeclarationJob={cancelDeclarationJob}
+      jobId={match.params.id}
+      deleteVisible={deleteVisible}
+      deleteProcess={deleteProcess}
+      cancelDelete={cancelDelete}
+      declarationJobVisible={declarationJobVisible}
+      loginToken={loginToken}
+      userToken={userToken}
       imgPath={imgPath}
       companyName={companyName}
       experienceLevel={experienceLevel}
@@ -72,6 +142,9 @@ const JobPostingContainer = ({ match }) => {
       commentInput={commentInput}
       onClickLikeBtn={onClickLikeBtn}
       onClickCommentBtn={onClickCommentBtn}
+      onClickModifyBtn={onClickModifyBtn}
+      onClickDeleteBtn={onClickDeleteBtn}
+      onClickDeclarationJobBtn={onClickDeclarationJobBtn}
     />
   );
 };

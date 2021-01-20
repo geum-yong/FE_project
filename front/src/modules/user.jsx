@@ -64,9 +64,9 @@ export function* userSaga() {
 
 const user = handleActions(
   {
-    [LOGIN_SUCCESS]: (state, action) => ({
+    [LOGIN_SUCCESS]: (state, { payload }) => ({
       login: true,
-      token: action.payload.id,
+      token: payload.id,
     }),
     [LOGOUT]: () => ({
       login: false,

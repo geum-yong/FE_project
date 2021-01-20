@@ -10,6 +10,8 @@
     "antd": "^4.10.0",
     "axios": "^0.21.1",
     "dotenv": "^8.2.0",
+    "emailjs-com": "^2.6.4",
+    "moment": "^2.29.1",
     "rc-tween-one": "^2.7.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -59,6 +61,8 @@
       "no-shadow": "off",
       "consistent-return": "off",
       "no-underscore-dangle": "off",
+      "no-nested-ternary": "off",
+      "no-useless-return": "off",
       "prettier/prettier": [
         "error",
         {

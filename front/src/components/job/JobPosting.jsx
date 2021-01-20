@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Tag, Button, Input, Empty } from 'antd';
+import { Tag, Button, Input, Empty, Modal } from 'antd';
 import { HeartFilled, HeartOutlined } from '@ant-design/icons';
 import MapContainer from '../../containers/common/MapContainer';
 import Comment from './Comment';
@@ -19,6 +19,15 @@ const JobSection = styled.section`
       padding-bottom: 50px;
       text-align: center;
       border-bottom: 2px solid #c2cbd3;
+
+      Button {
+        margin: 0 5px;
+
+        &:last-child {
+          border: 1px solid #ac6363;
+          background: #ac6363;
+        }
+      }
     }
   }
 
@@ -105,6 +114,18 @@ const JobSection = styled.section`
 `;
 
 const JobPosting = ({
+  declarationJobTitle,
+  declarationJobId,
+  declarationJobDescription,
+  declarationJobProcess,
+  cancelDeclarationJob,
+  jobId,
+  deleteVisible,
+  deleteProcess,
+  cancelDelete,
+  declarationJobVisible,
+  loginToken,
+  userToken,
   imgPath,
   companyName,
   experienceLevel,
@@ -125,6 +146,9 @@ const JobPosting = ({
   commentInput,
   onClickLikeBtn,
   onClickCommentBtn,
+  onClickModifyBtn,
+  onClickDeleteBtn,
+  onClickDeclarationJobBtn,
 }) => {
   return (
     <JobSection>
@@ -249,7 +273,19 @@ const JobPosting = ({
       </div>
 
       <div className='form-box btn-box'>
-        <Button type='primary'>수정</Button>
+        {loginToken === userToken && (
+          <>
+            <Button type='primary' onClick={onClickModifyBtn}>
+              수정
+            </Button>
+            <Button type='primary' danger onClick={onClickDeleteBtn}>
+              삭제
+            </Button>
+          </>
+        )}
+        <Button type='primary' danger onClick={onClickDeclarationJobBtn}>
+          신고
+        </Button>
       </div>
 
       <div className='comments-box'>
@@ -261,12 +297,80 @@ const JobPosting = ({
           {!comments.length !== 0 && (
             <>
               {comments.reverse().map(comment => (
-                <Comment key={comment._id} comment={comment} />
+                <Comment key={comment._id} comment={comment} jobId={jobId} companyName={companyName} />
               ))}
             </>
           )}
         </div>
       </div>
+
+      <Modal
+        visible={deleteVisible}
+        title='삭제하시겠습니까?'
+        onOk={deleteProcess}
+        onCancel={cancelDelete}
+        footer={[
+          <Button key='back' onClick={cancelDelete}>
+            취소
+          </Button>,
+          <Button key='submit' danger type='primary' onClick={deleteProcess}>
+            삭제
+          </Button>,
+        ]}
+      >
+        <p>다른 사람들에게 유용한 정보를 제공하고 있는 소중한 공고입니다.</p>
+        <p>신중히 선택해주세요.</p>
+      </Modal>
+      <Modal
+        visible={declarationJobVisible}
+        title='🚨 신고합니다!'
+        onOk={declarationJobProcess}
+        onCancel={cancelDeclarationJob}
+        footer={[
+          <Button key='back' onClick={cancelDeclarationJob}>
+            취소
+          </Button>,
+          <Button key='submit' danger type='primary' onClick={declarationJobProcess}>
+            신고
+          </Button>,
+        ]}
+      >
+        <p>여러분들의 신고는 사이트를 깨끗하게 유지하는데 큰 힘이 됩니다.</p>
+        <p>아래 양식에 맞춰 신고 내용을 입력해주시면 빠르게 조치를 취하겠습니다.</p>
+        <label htmlFor='declarationJobTitle' style={{ display: 'block', marginTop: 10 }}>
+          신고 제목
+        </label>
+        <input
+          type='text'
+          id='declarationJobTitle'
+          name='declarationJobTitle'
+          autoComplete='off'
+          ref={declarationJobTitle}
+          defaultValue='공고를 신고합니다.'
+          style={{ padding: '0 10px', width: '100%', border: '1px solid #000' }}
+        />
+        <label htmlFor='jobId' style={{ display: 'block' }}>
+          신고 공고
+        </label>
+        <input
+          type='text'
+          id='jobId'
+          name='jobId'
+          ref={declarationJobId}
+          value={`${jobId} - ${companyName}`}
+          style={{ padding: '0 10px', width: '100%' }}
+          disabled
+        />
+        <label htmlFor='declarationJobDecription' style={{ display: 'block' }}>
+          신고 내용
+        </label>
+        <textarea
+          id='declarationJobDecription'
+          name='declarationJobDecription'
+          ref={declarationJobDescription}
+          style={{ padding: '0 10px', width: '100%', border: '1px solid #000' }}
+        ></textarea>
+      </Modal>
     </JobSection>
   );
 };

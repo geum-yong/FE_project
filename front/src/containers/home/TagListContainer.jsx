@@ -13,6 +13,7 @@ import {
 } from '../../modules/jobs';
 
 const TagListContainer = () => {
+  const rollingCnt = useSelector(state => state.jobs.rollingCnt);
   const mode = useSelector(state => state.jobs.mode);
   const tags = useSelector(state => state.jobs.tags);
   const selectedTags = useSelector(state => state.jobs.selectedTags);
@@ -20,10 +21,10 @@ const TagListContainer = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (mode === 'all') {
+    if (mode === 'all' && rollingCnt === 0) {
       dispatch(getTagListAsync());
     }
-  }, [dispatch, mode]);
+  }, [dispatch, mode, rollingCnt]);
 
   const onClickAllBtn = useCallback(() => {
     dispatch(changeMode('all'));

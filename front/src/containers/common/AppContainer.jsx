@@ -11,7 +11,9 @@ const AppContainer = ({ children, match, history }) => {
   useEffect(() => {
     if (match.path === '/login' && localStorage.getItem('FESITE_TOKEN')) {
       history.push('/');
-    } else if (!loginState && localStorage.getItem('FESITE_TOKEN')) {
+    }
+
+    if (!loginState && localStorage.getItem('FESITE_TOKEN')) {
       dispatch(checkUserAsync(localStorage.getItem('FESITE_TOKEN')));
     }
   }, [loginState, dispatch, history, match.path]);

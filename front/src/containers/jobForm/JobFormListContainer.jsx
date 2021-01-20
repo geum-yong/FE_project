@@ -1,13 +1,25 @@
-import React, { memo, useCallback, useRef } from 'react';
+import React, { memo, useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Modal } from 'antd';
 import JobFormList from '../../components/jobForm/JobFormList';
-import { changeImage, changePreviewURL, changeInputValue, changeDate, changecheck, postJob } from '../../modules/jobFormData';
+import {
+  changeImage,
+  changePreviewURL,
+  changeInputValue,
+  changeDate,
+  changeCheck,
+  postJob,
+  getJob,
+  changeModifyMode,
+  setJobData,
+} from '../../modules/jobFormData';
 
-const JobFormDataContainer = ({ history }) => {
+const JobFormDataContainer = ({ history, match }) => {
   const userToken = useSelector(state => state.user.token);
   const imageInput = useRef();
+  const modifyMode = useSelector(state => state.jobFormData.modifyMode);
+  const imgPath = useSelector(state => state.jobFormData.jobData.imgPath);
   const imageFile = useSelector(state => state.jobFormData.jobData.img);
   const previewURL = useSelector(state => state.jobFormData.jobData.previewURL);
   const companyName = useSelector(state => state.jobFormData.jobData.companyName);
@@ -21,9 +33,24 @@ const JobFormDataContainer = ({ history }) => {
   const deadline = useSelector(state => state.jobFormData.jobData.deadline);
   const selectedDate = useSelector(state => state.jobFormData.jobData.selectedDate);
   const address1 = useSelector(state => state.jobFormData.jobData.address1);
+  const address2 = useSelector(state => state.jobFormData.jobData.address2);
   const source = useSelector(state => state.jobFormData.jobData.source);
+  const other = useSelector(state => state.jobFormData.jobData.other);
   const checked = useSelector(state => state.jobFormData.jobData.checked);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    if (match.params.id) {
+      dispatch(changeModifyMode(true));
+      dispatch(getJob({ jobId: match.params.id, userToken: localStorage.getItem('FESITE_TOKEN') }));
+    }
+
+    return () => {
+      dispatch(setJobData());
+    };
+  }, [dispatch, match.params.id]);
 
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
@@ -37,10 +64,10 @@ const JobFormDataContainer = ({ history }) => {
         return;
       }
 
-      if (e.target.files[0].size > 2000) {
+      if (e.target.files[0].size > 2000000000) {
         Modal.error({
           title: '파일 크기 제한',
-          content: '2000byte 이하의 이미지만 업로드 가능합니다.',
+          content: '2000000000byte 이하의 이미지만 업로드 가능합니다.',
         });
         dispatch(changeImage(''));
         dispatch(changePreviewURL(''));
@@ -68,10 +95,10 @@ const JobFormDataContainer = ({ history }) => {
   };
 
   const onChangeCheck = e => {
-    dispatch(changecheck(e.target.checked));
+    dispatch(changeCheck(e.target.checked));
   };
 
-  const onSubmit = async () => {
+  const onSubmit = useCallback(() => {
     if (userToken !== localStorage.getItem('FESITE_TOKEN')) {
       Modal.error({
         title: '잘못된 유저 정보',
@@ -160,7 +187,7 @@ const JobFormDataContainer = ({ history }) => {
       return;
     }
 
-    if (!checked) {
+    if (!modifyMode && !checked) {
       Modal.error({
         title: '양식 오류',
         content: '공지를 확인하고 체크해주세요.',
@@ -168,23 +195,64 @@ const JobFormDataContainer = ({ history }) => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('img', imageFile);
-    const test = dispatch(postJob(formData));
-    console.log(test);
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append('img', imageFile);
+      dispatch(postJob({ formData, jobId: match.params }));
+    } else {
+      dispatch(postJob({ jobId: match.params }));
+    }
 
-    setTimeout(() => {
-      history.push(`/`);
-    }, 500);
-  };
+    if (!modifyMode) {
+      setTimeout(() => {
+        history.push(`/`);
+      }, 500);
+    } else {
+      setTimeout(() => {
+        history.push(`/job/${match.params.id}`);
+      }, 500);
+    }
+  }, [
+    address1,
+    checked,
+    companyName,
+    condition,
+    deadline,
+    dispatch,
+    history,
+    imageFile,
+    introduce,
+    match.params,
+    modifyMode,
+    preferentialTreatment,
+    selectedDate,
+    skills.length,
+    source,
+    task,
+    userToken,
+    welfare,
+  ]);
 
   return (
     <JobFormList
+      modifyMode={modifyMode}
+      imgPath={imgPath}
+      companyName={companyName}
+      experienceLevel={experienceLevel}
+      introduce={introduce}
+      task={task}
+      condition={condition}
+      preferentialTreatment={preferentialTreatment}
+      welfare={welfare}
+      deadline={deadline}
+      address1={address1}
+      address2={address2}
+      source={source}
+      other={other}
       imageInput={imageInput}
       imageFile={imageFile}
       previewURL={previewURL}
       selectedDate={selectedDate}
-      experienceLevel={experienceLevel}
       onClickImageUpload={onClickImageUpload}
       onChangeImage={onChangeImage}
       onChangeInputValue={onChangeInputValue}
