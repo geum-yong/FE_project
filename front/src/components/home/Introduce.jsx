@@ -13,9 +13,8 @@ const Introduce = () => {
 
     > p {
       margin-top: 10px;
-      line-height: 1.3;
-      font-family: 'yeonsung';
-      font-size: 13px;
+      line-height: 1.6;
+      font-size: 9px;
       color: #707379;
     }
 
@@ -28,7 +27,8 @@ const Introduce = () => {
 
       > p {
         margin-top: 20px;
-        font-size: 25px;
+        font-size: 17px;
+        line-height: 1.3;
       }
     }
   `;
