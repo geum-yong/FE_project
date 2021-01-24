@@ -11,13 +11,14 @@
 
 ## 스택
 
-- 프론트
+- Front
   - styled-component
   - ant-design
   - react / redux
-- 백
-  - mongoDB
+- Back
   - nodejs / express
+- Database
+  - MongoDB / mongoose
 
 ## 실행 방법
 
