@@ -2,6 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const morgan = require('morgan');
+const hpp = require('hpp');
+const helmet = require('helmet');
 const path = require('path');
 const mongoose = require('mongoose');
 
@@ -26,6 +29,14 @@ mongoose
   });
 
 app.set('port', process.env.PORT || 3050);
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(morgan('combined'));
+  app.use(hpp());
+  app.use(helmet());
+} else {
+  app.use(morgan('dev'));
+}
 
 app.use(cookieParser(process.env.COKKIE_ID));
 app.use(express.json());
