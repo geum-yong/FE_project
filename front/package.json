@@ -12,6 +12,7 @@
     "dotenv": "^8.2.0",
     "emailjs-com": "^2.6.4",
     "moment": "^2.29.1",
+    "pm2": "^4.5.1",
     "rc-tween-one": "^2.7.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -29,7 +30,7 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set PORT=80 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

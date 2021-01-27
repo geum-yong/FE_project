@@ -11,10 +11,15 @@ import App from './App';
 import 'antd/dist/antd.css';
 import rootReducer, { rootSaga } from './modules';
 
+require('dotenv').config();
+
 const logger = createLogger();
 const sagaMiddleware = createSagaMiddleware();
 
-const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(logger, sagaMiddleware)));
+const store =
+  process.env.REACT_APP_SERVER_URL === 'production'
+    ? createStore(rootReducer, applyMiddleware(sagaMiddleware))
+    : createStore(rootReducer, composeWithDevTools(applyMiddleware(logger, sagaMiddleware)));
 
 sagaMiddleware.run(rootSaga);
 
