@@ -4,7 +4,8 @@
   "description": "comunity app for front end developer",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   },
   "author": "",
   "license": "MIT",
