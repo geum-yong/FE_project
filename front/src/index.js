@@ -17,7 +17,7 @@ const logger = createLogger();
 const sagaMiddleware = createSagaMiddleware();
 
 const store =
-  process.env.REACT_APP_SERVER_URL === 'production'
+  process.env.REACT_APP_NODE_ENV === 'production'
     ? createStore(rootReducer, applyMiddleware(sagaMiddleware))
     : createStore(rootReducer, composeWithDevTools(applyMiddleware(logger, sagaMiddleware)));
 
