@@ -25,7 +25,7 @@ mongoose
     console.log(e);
   });
 
-app.set('port', process.env.PORT || 3050);
+app.set('port', process.env.PORT || 80);
 
 app.use(cookieParser(process.env.COKKIE_ID));
 app.use(express.json());
@@ -42,6 +42,10 @@ app.use(
 );
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req, res) => {
+  res.send('test');
+});
 
 app.use('/api', api);
 
