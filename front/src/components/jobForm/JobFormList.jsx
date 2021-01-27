@@ -271,7 +271,7 @@ const JobFormData = ({
               id='deadline'
               name='deadline'
               onChange={onChangeDate}
-              value={deadline ? moment(deadline, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD')}
+              value={moment(deadline, 'YYYY-MM-DD')}
               format={'YYYY-MM-DD'}
               allowClear
             />
