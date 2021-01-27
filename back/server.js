@@ -43,10 +43,6 @@ app.use(
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => {
-  res.send('test');
-});
-
 app.use('/api', api);
 
 app.listen(app.get('port'), () => {
