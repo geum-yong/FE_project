@@ -376,7 +376,7 @@ exports.likeList = async (req, res) => {
 
     const likeJobs = await Promise.all(userLikes.map(jobId => Job.findOne({ id: jobId })));
 
-    const jobs = likeJobs.filter(job => job.deletedDate === null);
+    const jobs = likeJobs.length > 0 ? likeJobs.filter(job => job.deletedDate === null) : [];
 
     res.send({ message: 'list success', jobs });
   } catch (e) {
