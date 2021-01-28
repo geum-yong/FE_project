@@ -98,6 +98,7 @@ const JobSection = styled.section`
     font-size: 18px;
     line-height: 1.6;
     letter-spacing: 1.1px;
+    white-space: pre-wrap;
 
     > a {
       color: #1890ff;
@@ -185,9 +186,7 @@ const JobPosting = ({
         <p className='title'>
           👨‍💻<span>회사 소개</span>
         </p>
-        <p className='description'>
-          <pre>{introduce}</pre>
-        </p>
+        <p className='description'>{introduce}</p>
       </div>
 
       {/* 담당 업무 */}
@@ -195,9 +194,7 @@ const JobPosting = ({
         <p className='title'>
           📌<span>담당 업무</span>
         </p>
-        <p className='description'>
-          <pre>{task}</pre>
-        </p>
+        <p className='description'>{task}</p>
       </div>
 
       {/* 자격 요건 */}
@@ -205,9 +202,7 @@ const JobPosting = ({
         <p className='title'>
           📜<span>자격 요건</span>
         </p>
-        <p className='description'>
-          <pre>{condition}</pre>
-        </p>
+        <p className='description'>{condition}</p>
       </div>
 
       {/* 우대 사항 */}
@@ -215,9 +210,7 @@ const JobPosting = ({
         <p className='title'>
           👍<span>우대 사항</span>
         </p>
-        <p className='description'>
-          <pre>{preferentialTreatment}</pre>
-        </p>
+        <p className='description'>{preferentialTreatment}</p>
       </div>
 
       {/* 기술 스택 */}
@@ -239,9 +232,7 @@ const JobPosting = ({
         <p className='title'>
           ✨<span>회사 복지</span>
         </p>
-        <p className='description'>
-          <pre>{welfare}</pre>
-        </p>
+        <p className='description'>{welfare}</p>
       </div>
 
       {/* 마감일 */}
@@ -249,9 +240,7 @@ const JobPosting = ({
         <p className='title'>
           📆<span>마감일</span>
         </p>
-        <p className='description'>
-          <pre>{deadline === '상시' ? deadline : `${deadline}까지`}</pre>
-        </p>
+        <p className='description'>{deadline === '상시' ? deadline : `${deadline}까지`}</p>
       </div>
 
       {/* 위치 */}
@@ -259,9 +248,7 @@ const JobPosting = ({
         <p className='title'>
           📍<span>위치</span>
         </p>
-        <p className='description'>
-          <pre>{address2 ? `${address1}, ${address2}` : address1}</pre>
-        </p>
+        <p className='description'>{address2 ? `${address1}, ${address2}` : address1}</p>
         <MapContainer />
       </div>
 
@@ -283,9 +270,7 @@ const JobPosting = ({
         <p className='title'>
           💡<span>기타 추가 정보</span>
         </p>
-        <p className='description'>
-          <pre>{other}</pre>
-        </p>
+        <p className='description'>{other}</p>
       </div>
 
       <div className='form-box btn-box'>
