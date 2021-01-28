@@ -211,6 +211,7 @@ const job = handleActions(
       ...state,
       jobs: action.payload.jobs,
       totalJobCnt: action.payload.jobsCnt,
+      rollingCnt: 0,
     }),
     [SHOW_MODAL]: state => ({
       ...state,
