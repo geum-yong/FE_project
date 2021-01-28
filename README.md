@@ -23,7 +23,8 @@
 
 ## 영상
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/jpMWMrHVrdk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[영상 링크](https://youtu.be/jpMWMrHVrdk)
+![caption](./FEnews.gif)
 
 ## 실행 방법
 
