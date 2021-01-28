@@ -33,7 +33,7 @@ mongoose
     console.log(e);
   });
 
-app.set('port', process.env.PORT || 3060);
+app.set('port', process.env.PORT || 3050);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(morgan('combined'));
