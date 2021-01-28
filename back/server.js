@@ -12,7 +12,12 @@ const app = express();
 
 const api = require('./api');
 
-app.use(cors());
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 require('dotenv').config();
 
 mongoose
