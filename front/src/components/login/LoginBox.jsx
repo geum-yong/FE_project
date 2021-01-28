@@ -1,9 +1,8 @@
 import React from 'react';
-import dotenv from 'dotenv';
 import styled from 'styled-components';
 import { GoogleLogin } from 'react-google-login';
 
-dotenv.config();
+require('dotenv').config();
 
 const LoginWrapper = styled.section`
   position: absolute;
@@ -81,7 +80,7 @@ const LoginBox = ({ onLoginSuccess }) => {
         clientId={process.env.REACT_APP_GOOGLE_ID}
         buttonText='google로 이용하기'
         onSuccess={onLoginSuccess}
-        onFailure={'1'}
+        onFailure={e => console.log(e)}
         cookiePolicy={'single_host_origin'}
       />
     </LoginWrapper>
