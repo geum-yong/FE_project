@@ -11,6 +11,7 @@
 - 구글 Oauth 사용해서 로그인, 회원가입 구현
 - React로 프론트 구성, Express로 백 구성
 - styled-component, ant-design으로 웹 디자인 구성
+- 모바일, 테블릿, PC 크기에 따른 반응형 렌더링 구현
 - MongoDB로 데이터 관리, Express에서 mongoose로 쿼리 실행
 - Redux 사용해서 전역에서 상태값 관리
 - Redux-saga 사용해서 비동기 처리
