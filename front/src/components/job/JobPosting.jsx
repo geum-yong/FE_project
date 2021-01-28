@@ -185,7 +185,9 @@ const JobPosting = ({
         <p className='title'>
           👨‍💻<span>회사 소개</span>
         </p>
-        <p className='description'>{introduce}</p>
+        <p className='description'>
+          <pre>{introduce}</pre>
+        </p>
       </div>
 
       {/* 담당 업무 */}
@@ -193,7 +195,9 @@ const JobPosting = ({
         <p className='title'>
           📌<span>담당 업무</span>
         </p>
-        <p className='description'>{task}</p>
+        <p className='description'>
+          <pre>{task}</pre>
+        </p>
       </div>
 
       {/* 자격 요건 */}
@@ -201,7 +205,9 @@ const JobPosting = ({
         <p className='title'>
           📜<span>자격 요건</span>
         </p>
-        <p className='description'>{condition}</p>
+        <p className='description'>
+          <pre>{condition}</pre>
+        </p>
       </div>
 
       {/* 우대 사항 */}
@@ -209,7 +215,9 @@ const JobPosting = ({
         <p className='title'>
           👍<span>우대 사항</span>
         </p>
-        <p className='description'>{preferentialTreatment}</p>
+        <p className='description'>
+          <pre>{preferentialTreatment}</pre>
+        </p>
       </div>
 
       {/* 기술 스택 */}
@@ -231,7 +239,9 @@ const JobPosting = ({
         <p className='title'>
           ✨<span>회사 복지</span>
         </p>
-        <p className='description'>{welfare}</p>
+        <p className='description'>
+          <pre>{welfare}</pre>
+        </p>
       </div>
 
       {/* 마감일 */}
@@ -239,7 +249,9 @@ const JobPosting = ({
         <p className='title'>
           📆<span>마감일</span>
         </p>
-        <p className='description'>{deadline === '상시' ? deadline : `${deadline}까지`}</p>
+        <p className='description'>
+          <pre>{deadline === '상시' ? deadline : `${deadline}까지`}</pre>
+        </p>
       </div>
 
       {/* 위치 */}
@@ -247,7 +259,9 @@ const JobPosting = ({
         <p className='title'>
           📍<span>위치</span>
         </p>
-        <p className='description'>{address2 ? `${address1}, ${address2}` : address1}</p>
+        <p className='description'>
+          <pre>{address2 ? `${address1}, ${address2}` : address1}</pre>
+        </p>
         <MapContainer />
       </div>
 
@@ -269,7 +283,9 @@ const JobPosting = ({
         <p className='title'>
           💡<span>기타 추가 정보</span>
         </p>
-        <p className='description'>{other}</p>
+        <p className='description'>
+          <pre>{other}</pre>
+        </p>
       </div>
 
       <div className='form-box btn-box'>
